@@ -1,0 +1,42 @@
+version: '3'
+
+volumes:
+  core_local_postgres_data: {}
+  core_local_postgres_data_backups: {}
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: core_local_djangos
+    container_name: core_local_djangos
+    depends_on:
+      - postgres
+      - mailpit
+    volumes:
+      - .:/app:z
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      - '8000:8000'
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: core_production_postgres
+    container_name: core_local_postgress
+    volumes:
+      - core_local_postgres_data:/var/lib/postgresql/data
+      - core_local_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.local/.postgres
+
+  mailpit:
+    image: docker.io/axllent/mailpit:latest
+    container_name: core_local_mailpits
+    ports:
+      - "8025:8025"
