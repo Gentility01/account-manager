@@ -1,13 +1,18 @@
-import contextlib
+# core/applications/users/apps.py
 
 from django.apps import AppConfig
-from django.utils.translation import gettext_lazy as _
-
 
 class UsersConfig(AppConfig):
-    name = "core.applications.users"
-    verbose_name = _("Users")
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'core.applications.users'
 
     def ready(self):
-        with contextlib.suppress(ImportError):
-            import core.applications.users.signals  # noqa: F401
+        # Import signals here
+        from django.contrib.auth.signals import user_logged_in
+        from django.dispatch import receiver
+        from .models import User, Account
+
+        @receiver(user_logged_in, sender=User)
+        def create_account_on_login(sender, user, request, **kwargs):
+            # Your signal handler code here
+            pass

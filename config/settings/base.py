@@ -179,6 +179,7 @@ TEMPLATES = [
             # https://docs.djangoproject.com/en/dev/ref/settings/#template-context-processors
             "context_processors": [
                 "core.applications.ecommerce.context_processors.product_list",
+                "core.applications.ecommerce.context_processors.products_by_category",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",

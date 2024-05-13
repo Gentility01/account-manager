@@ -4,15 +4,27 @@ from core.utils.choices import ProductStatus, Status, Rating
 from django.db.models import CharField, CASCADE, SET_NULL, TextField, DecimalField, BooleanField, IntegerField
 from django.utils.translation import gettext_lazy as _
 from shortuuid.django_fields import ShortUUIDField
+from django.contrib.auth.models import Permission
+from django_resized import ResizedImageField
+from core.utils.media import MediaHelper
 # from django.utils.html import mark_safe
 import auto_prefetch
 
 # Create your models here.
 
-class Tags(UIDTimeBasedModel):
+class Permissions:
+    CAN_CRUD_PRODUCT = Permission.objects.filter(
+        codename__in=['add_product', 'change_product', 'delete_product']
+    )
+    CAN_CRUD_CATEGORY = Permission.objects.filter(
+        codename__in=['add_category', 'change_category', 'delete_category']
+    )
+
+class Tags(TitleTimeBasedModel):
     ...
 
-class Category(TitleTimeBasedModel, ImageBaseModels, UIDTimeBasedModel):
+class Category(TitleTimeBasedModel):
+    image = ResizedImageField(upload_to=MediaHelper.get_image_upload_path)
     sub_category = auto_prefetch.ForeignKey(
         "self", on_delete=CASCADE, blank=True, null=True, related_name='subcategories'
     )
@@ -40,13 +52,16 @@ class Product(TitleandUIDTimeBasedModel, ImageBaseModels):
     in_stock = BooleanField(default=True)
     featured = BooleanField(default=False)
     digital = BooleanField(default=True)
-    newly_arrived = BooleanField(default=False)
     best_seller = BooleanField(default=False)
     special_offer = BooleanField(default=False)
+    just_arrived = BooleanField(default=True)
     # sku = ShortUUIDField(unique=True, length=10, max_length=20, prefix="sku", alphabet="abcdefghijklmnopqrstuvwxyz0123456789")
 
     class Meta:
         verbose_name_plural = "Products"
+        permissions = [
+            ('can_crud_product', 'Can create, update, and delete product'),
+        ]
 
     def get_percentage(self, decimal_places=2):
         if self.oldprice > 0:

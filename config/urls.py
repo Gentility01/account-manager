@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.urls import include
 from django.urls import path
 from django.views import defaults as default_views
-from django.views.generic import TemplateView
+
 
 urlpatterns = [
     path("", include("core.applications.home.urls", namespace="homeapp")),
@@ -13,12 +13,14 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("users/", include("core.applications.users.urls", namespace="users")),
+    path("ecommerce/", include("core.applications.ecommerce.urls", namespace="ecommerce")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
     # ...
     # Media files
-    *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
+    # *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 if settings.DEBUG:

@@ -1,5 +1,14 @@
 from django.contrib import admin
-from core.applications.ecommerce.models import Address, WishList, ProductReview, CartOrderItems, CartOrder, ProductImages, Product, Category, Tags
+from core.applications.ecommerce.models import (
+    Address, WishList, ProductReview, 
+    CartOrderItems, CartOrder, ProductImages, 
+    Product, Category, Tags
+)
+
+# from core.utils.permissions import CAN_MANAGE_BANNERS, CAN_MANAGE_BLOGS, CAN_MANAGE_PRODUCTS
+# from django.contrib.auth.models import Group
+
+
 # Register your models here.
 
 
@@ -15,7 +24,7 @@ admin.site.register(Tags, TagAdmin)
 
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductImagesAdmin]
-    list_display = ["user", "title", "price", "image","in_stock"]
+    list_display = ["user", "title", "price", "image","in_stock", "digital", "best_seller", "just_arrived", "featured", "special_offer"]
 admin.site.register(Product, ProductAdmin)
 
 
@@ -54,3 +63,5 @@ admin.site.register(Address, AddressAdmin)
 class CartOrderItemsAdmin(admin.ModelAdmin):
     list_display = ["order", "item", "quantity", "price", "invoice_no"]
 admin.site.register(CartOrderItems, CartOrderItemsAdmin)
+
+

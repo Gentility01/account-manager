@@ -9,8 +9,8 @@ services:
     build:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
-    image: core_local_djangos
-    container_name: core_local_djangos
+    image: accountmarket
+    container_name: accountmarket
     depends_on:
       - postgres
       - mailpit
@@ -37,6 +37,6 @@ services:
 
   mailpit:
     image: docker.io/axllent/mailpit:latest
-    container_name: core_local_mailpits
+    container_name: accountmarket_mailpits
     ports:
       - "8025:8025"

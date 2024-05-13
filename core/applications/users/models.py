@@ -35,6 +35,8 @@ class User(UIDTimeBasedModel, AbstractUser):
 
         """
         return reverse("users:detail", kwargs={"pk": self.id})
+    def __str__(self) -> str:
+        return self.email
 
 
 class Account(UIDTimeBasedModel):
@@ -94,6 +96,11 @@ class ContentManager(BaseProfile):
     class Meta(BaseProfile.Meta):
         verbose_name_plural = "Content Managers"
 
+    def save(self, *args, **kwargs):
+        if not self.expertise_area:
+            self.expertise_area = "General"  # Set default value if expertise_area is not provided
+        super().save(*args, **kwargs)
+
 
 class MarketingAndSales(BaseProfile):
     """
@@ -103,6 +110,11 @@ class MarketingAndSales(BaseProfile):
 
     class Meta(BaseProfile.Meta):
         verbose_name_plural = "Marketing and Sales"
+
+    def save(self, *args, **kwargs):
+        if not self.marketing_strategy:
+            self.marketing_strategy = "Perfect"  # Set default value if expertise_area is not provided
+        super().save(*args, **kwargs)
 
 
 class Accountant(BaseProfile):
@@ -114,6 +126,12 @@ class Accountant(BaseProfile):
     class Meta(BaseProfile.Meta):
         verbose_name_plural = "Accountants"
 
+    def save(self, *args, **kwargs):
+        if not self.financial_software_used:
+            self.financial_software_used = "Real One"  
+        super().save(*args, **kwargs)
+
+
 
 class HelpDeskTechnicalSupport(BaseProfile):
     """
@@ -123,6 +141,11 @@ class HelpDeskTechnicalSupport(BaseProfile):
 
     class Meta(BaseProfile.Meta):
         verbose_name_plural = "Help Desk Technical Supports"
+    
+    def save(self, *args, **kwargs):
+        if not self.technical_skills:
+            self.technical_skills = "Web dev"  
+        super().save(*args, **kwargs)
 
 
 class LiveChatSupport(BaseProfile):
@@ -134,6 +157,11 @@ class LiveChatSupport(BaseProfile):
     class Meta(BaseProfile.Meta):
         verbose_name_plural = "Live Chat Supports"
 
+    def save(self, *args, **kwargs):
+        if not self.languages_spoken:
+            self.languages_spoken = "English"  
+        super().save(*args, **kwargs)
+
 
 class AffiliatePartner(BaseProfile):
     """
@@ -144,6 +172,11 @@ class AffiliatePartner(BaseProfile):
     class Meta(BaseProfile.Meta):
         verbose_name_plural = "Affiliate Partners"
 
+    def save(self, *args, **kwargs):
+        if not self.affiliate_code:
+            self.affiliate_code = "412"  
+        super().save(*args, **kwargs)
+
 
 class DigitalGoodsDistribution(BaseProfile):
     """
@@ -153,3 +186,8 @@ class DigitalGoodsDistribution(BaseProfile):
 
     class Meta(BaseProfile.Meta):
         verbose_name_plural = "Digital Goods Distributions"
+
+    def save(self, *args, **kwargs):
+        if not self.delivery_method:
+            self.delivery_method = "Fast"  
+        super().save(*args, **kwargs)
