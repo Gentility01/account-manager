@@ -83,7 +83,6 @@ LOCAL_APPS = [
     "core.applications.users",
     "core.applications.home",
     "core.applications.ecommerce",
-    
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -280,7 +279,7 @@ ACCOUNT_ADAPTER = "core.applications.users.adapters.AccountAdapter"
 ACCOUNT_FORMS = {
     "signup": "core.applications.users.forms.UserSignupForm",
     "custom_signup": "core.applications.users.forms.CustomSignupForm",
-    }
+}
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
 SOCIALACCOUNT_ADAPTER = "core.applications.users.adapters.SocialAccountAdapter"
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html

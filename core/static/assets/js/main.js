@@ -20,24 +20,24 @@ if ($(window).width() < 992) {
   menu-stick
 --------------------- */
 var s = $(".sticker");
-var pos = s.position();					   
+var pos = s.position();
 $(window).on('scroll',function() {
 	var windowpos = $(window).scrollTop();
 	if (windowpos > pos.top) {
 	s.addClass("stick");
 	} else {
-		s.removeClass("stick");	
+		s.removeClass("stick");
 	}
 });
 /*--------------------------
  scrollUp
----------------------------- */	
+---------------------------- */
 $.scrollUp({
 	scrollText: '<i class="fa fa-angle-up"></i>',
 	easingType: 'linear',
 	scrollSpeed: 900,
 	animation: 'slide'
-}); 
+});
 
 /*-------------------------------------
     Hero Slider
@@ -564,18 +564,18 @@ $(".brand-items").slick({
 countdown
 --------------------- */
 $('[data-countdown]').each(function() {
-	
+
 	var $this = $(this), finalDate = $(this).data('countdown');
-	
+
 	$this.countdown(finalDate, function(event) {
 	$this.html(event.strftime('<span class="cdown days"><span class="time-count">%-D</span><p>Days</p></span> <span class="cdown hour"><span class="time-count">%-H</span> <p>Hour</p></span> <span class="cdown minutes"><span class="time-count">%M</span> <p>Min</p></span> <span class="cdown second"> <span><span class="time-count">%S</span> <p>Sec</p></span>'));
 	});
-	
+
 });
 
 /*----------------------------
  price-slider
------------------------------- */  
+------------------------------ */
 $( "#slider-range" ).slider({
 	range: true,
 	min: 40,
@@ -589,7 +589,7 @@ $( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
 " - $" + $( "#slider-range" ).slider( "values", 1 ) );
 /*----------------------------
  cart-plus-minus-button
------------------------------- */  
+------------------------------ */
 $(".qtybutton").on("click", function() {
 	var $button = $(this);
 	var oldValue = $button.parent().find("input").val();
@@ -608,11 +608,11 @@ $(".qtybutton").on("click", function() {
 });
 /*--------------------------
  venobox
----------------------------- */	
+---------------------------- */
 $(document).ready(function(){
     $('.venobox').venobox();
 });
 
 
 
-})(jQuery); 
+})(jQuery);

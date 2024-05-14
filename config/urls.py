@@ -13,7 +13,9 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("users/", include("core.applications.users.urls", namespace="users")),
-    path("ecommerce/", include("core.applications.ecommerce.urls", namespace="ecommerce")),
+    path(
+        "ecommerce/", include("core.applications.ecommerce.urls", namespace="ecommerce")
+    ),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
     # ...

@@ -1,67 +1,73 @@
 from django.contrib import admin
-from core.applications.ecommerce.models import (
-    Address, WishList, ProductReview, 
-    CartOrderItems, CartOrder, ProductImages, 
-    Product, Category, Tags
-)
 
-# from core.utils.permissions import CAN_MANAGE_BANNERS, CAN_MANAGE_BLOGS, CAN_MANAGE_PRODUCTS
-# from django.contrib.auth.models import Group
-
-
-# Register your models here.
+from core.applications.ecommerce.models import Address
+from core.applications.ecommerce.models import CartOrder
+from core.applications.ecommerce.models import CartOrderItems
+from core.applications.ecommerce.models import Category
+from core.applications.ecommerce.models import Product
+from core.applications.ecommerce.models import ProductImages
+from core.applications.ecommerce.models import ProductReview
+from core.applications.ecommerce.models import Tags
+from core.applications.ecommerce.models import WishList
 
 
 class ProductImagesAdmin(admin.TabularInline):
     model = ProductImages
 
 
+@admin.register(Tags)
 class TagAdmin(admin.ModelAdmin):
     list_display = ["id"]
-admin.site.register(Tags, TagAdmin)
 
 
-
+@admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductImagesAdmin]
-    list_display = ["user", "title", "price", "image","in_stock", "digital", "best_seller", "just_arrived", "featured", "special_offer"]
-admin.site.register(Product, ProductAdmin)
+    list_display = [
+        "user",
+        "title",
+        "price",
+        "image",
+        "in_stock",
+        "digital",
+        "best_seller",
+        "just_arrived",
+        "featured",
+        "special_offer",
+    ]
 
 
+@admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ["id", "title", "display_image"]
 
+    @admin.display(
+        description="Image Preview",
+    )
     def display_image(self, obj):
-        return obj.image.url if obj.image else ''
-
-    display_image.short_description = 'Image Preview'
-admin.site.register(Category, CategoryAdmin)
+        return obj.image.url if obj.image else ""
 
 
-
+@admin.register(CartOrder)
 class CartOrderAdmin(admin.ModelAdmin):
     list_display = ["user", "price", "paid_status", "product_status"]
-admin.site.register(CartOrder, CartOrderAdmin)
 
 
-
+@admin.register(ProductReview)
 class ProductReviewAdmin(admin.ModelAdmin):
     list_display = ["user", "product", "rating"]
-admin.site.register(ProductReview, ProductReviewAdmin)\
 
 
+@admin.register(WishList)
 class WishListAdmin(admin.ModelAdmin):
     list_display = ["user", "product"]
-admin.site.register(WishList, WishListAdmin)
 
 
+@admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
     list_display = ["user", "status"]
-admin.site.register(Address, AddressAdmin)
 
 
+@admin.register(CartOrderItems)
 class CartOrderItemsAdmin(admin.ModelAdmin):
     list_display = ["order", "item", "quantity", "price", "invoice_no"]
-admin.site.register(CartOrderItems, CartOrderItemsAdmin)
-
-

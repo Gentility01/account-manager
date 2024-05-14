@@ -6,6 +6,7 @@ class ProductStatus(TextChoices):
     SHIPPED = ("SHIPPED", "SHIPPED")
     DELIVERD = ("DELIVERD", "DELIVERD")
 
+
 class Status(TextChoices):
     DRAFT = ("DRAFT", "DRAFT")
     DISABLED = ("DISABLED", "DISABLED")
@@ -21,4 +22,3 @@ Rating = (
     (4, "⭐⭐⭐⭐"),
     (5, "⭐⭐⭐⭐⭐"),
 )
-

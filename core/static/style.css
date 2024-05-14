@@ -8,10 +8,10 @@
     Version: 1.0
 
 -----------------------------------------------------------------------------------
-    
+
     CSS INDEX
     ===================
-	
+
     1. Theme Default CSS (body, link color, section etc)
 		1.2 Section Title
 		1.3 Scrollup CSS
@@ -393,7 +393,7 @@ h1, h2, h3, h4, h5, h6 {
 	padding:5px 0;
 	text-align:left;
 }
-.mainmenu nav ul li .submenu li a, 
+.mainmenu nav ul li .submenu li a,
 .mainmenu nav ul li .megamenu-single ul li a {
     background: 0 0;
     position: relative;
@@ -1607,7 +1607,7 @@ h1, h2, h3, h4, h5, h6 {
 	border-color: #4e453a;
 	border-top: 1px solid #272727;
 }
-.product-single.p-black .product-action .product-compare, 
+.product-single.p-black .product-action .product-compare,
 .product-single.p-black .product-action .product-wishlist {
 	border-color:#40351e;
 	color:#cbae8a;
@@ -1911,7 +1911,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .vertical-menu ul li a:hover {
 	color:#e23e1d;
-} 
+}
 .vertical-menu ul li ul {
 	height: auto;
 	overflow: hidden;
@@ -3091,12 +3091,12 @@ a.value-decrease::before {
 .faq-heading h5 a i {
 	color:#e23e1d;
 }
-.faq-heading h5 a[aria-expanded=true] .fa.fa-plus-circle, 
-.faq-heading h5 a[aria-expanded=true] .fa.fa-plus { 
+.faq-heading h5 a[aria-expanded=true] .fa.fa-plus-circle,
+.faq-heading h5 a[aria-expanded=true] .fa.fa-plus {
   display:none;
 }
-.faq-heading h5 a[aria-expanded=false] .fa.fa-minus-circle, 
-.faq-heading h5 a[aria-expanded=false] .fa.fa-minus { 
+.faq-heading h5 a[aria-expanded=false] .fa.fa-minus-circle,
+.faq-heading h5 a[aria-expanded=false] .fa.fa-minus {
   display:none;
 }
 .faq-heading h5 a[aria-expanded=false] {

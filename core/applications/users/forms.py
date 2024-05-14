@@ -1,22 +1,22 @@
 from allauth.account.forms import SignupForm
 from allauth.socialaccount.forms import SignupForm as SocialSignupForm
 from django.contrib.auth import forms as admin_forms
-from django.forms import EmailField, CharField, Textarea
-from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+from django.forms import CharField
+from django.forms import EmailField
+from django.forms import Textarea
+from django.utils.translation import gettext_lazy as _
 
-from .models import (
-    User,
-    Administrator,
-    CustomerSupportRepresentative,
-    ContentManager,
-    MarketingAndSales,
-    Accountant,
-    HelpDeskTechnicalSupport,
-    LiveChatSupport,
-    AffiliatePartner,
-    DigitalGoodsDistribution,
-)
+from .models import Accountant
+from .models import Administrator
+from .models import AffiliatePartner
+from .models import ContentManager
+from .models import CustomerSupportRepresentative
+from .models import DigitalGoodsDistribution
+from .models import HelpDeskTechnicalSupport
+from .models import LiveChatSupport
+from .models import MarketingAndSales
+from .models import User
 
 
 class UserAdminChangeForm(admin_forms.UserChangeForm):
@@ -48,9 +48,15 @@ class CustomSignupBaseForm(SignupForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Customize form fields
-        self.fields["email"].widget.attrs.update({"class": "form-control", "placeholder": "Enter your email"})
-        self.fields["password1"].widget.attrs.update({"class": "form-control", "placeholder": "Enter your password"})
-        self.fields["password2"].widget.attrs.update({"class": "form-control", "placeholder": "Confirm your password"})
+        self.fields["email"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Enter your email"},
+        )
+        self.fields["password1"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Enter your password"},
+        )
+        self.fields["password2"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Confirm your password"},
+        )
 
 
 class UserSignupForm(CustomSignupBaseForm):
@@ -60,15 +66,29 @@ class UserSignupForm(CustomSignupBaseForm):
     Check UserSocialSignupForm for accounts created from social.
     """
 
-    pass
-
 
 class CustomSignupForm(CustomSignupBaseForm):
     """
     Custom form for handling additional profile data during signup.
     """
 
-    user_type = CharField(max_length=50, required=True)  # Add a field to select user type
+    # Define user types as a class variable
+    USER_TYPES = {
+        "administrator": Administrator,
+        "customer_support_representative": CustomerSupportRepresentative,
+        "content_manager": ContentManager,
+        "marketing_and_sales": MarketingAndSales,
+        "accountant": Accountant,
+        "help_desk_technical_support": HelpDeskTechnicalSupport,
+        "live_chat_support": LiveChatSupport,
+        "affiliate_partner": AffiliatePartner,
+        "digital_goods_distribution": DigitalGoodsDistribution,
+    }
+
+    user_type = CharField(
+        max_length=50,
+        required=True,
+    )  # Add a field to select user type
 
     department = CharField(max_length=100, required=False)
     expertise_area = CharField(max_length=255, required=False)
@@ -79,36 +99,23 @@ class CustomSignupForm(CustomSignupBaseForm):
     affiliate_code = CharField(max_length=20, required=False)
     delivery_method = CharField(max_length=50, required=False)
 
+    class InvalidUserTypeValidationError(ValidationError):
+        message = "Invalid user type"
+
     def clean(self):
         cleaned_data = super().clean()
         user_type = cleaned_data.get("user_type")
-        if user_type not in ["administrator", "customer_support_representative", "content_manager", "accountant", ...]:
-            raise ValidationError("Invalid user type")
+        if user_type not in self.USER_TYPES:
+            raise self.InvalidUserTypeValidationError
         return cleaned_data
 
     def save(self, request):
         user = super().save(request)
         profile_data = self.cleaned_data
 
-        # Create profile instance based on user's role
-        if profile_data["user_type"] == "administrator":
-            Administrator.objects.create(user=user, department=profile_data.get("department"))
-        elif profile_data["user_type"] == "customer_support_representative":
-            CustomerSupportRepresentative.objects.create(user=user, department=profile_data.get("department"))
-        elif profile_data["user_type"] == "content_manager":
-            ContentManager.objects.create(user=user, expertise_area=profile_data.get("expertise_area"))
-        elif profile_data["user_type"] == "marketing_and_sales":
-            MarketingAndSales.objects.create(user=user, marketing_strategy=profile_data.get("marketing_strategy"))
-        elif profile_data["user_type"] == "accountant":
-            Accountant.objects.create(user=user, financial_software_used=profile_data.get("financial_software_used"))
-        elif profile_data["user_type"] == "help_desk_technical_support":
-            HelpDeskTechnicalSupport.objects.create(user=user, technical_skills=profile_data.get("technical_skills"))
-        elif profile_data["user_type"] == "live_chat_support":
-            LiveChatSupport.objects.create(user=user, languages_spoken=profile_data.get("languages_spoken"))
-        elif profile_data["user_type"] == "affiliate_partner":
-            AffiliatePartner.objects.create(user=user, affiliate_code=profile_data.get("affiliate_code"))
-        elif profile_data["user_type"] == "digital_goods_distribution":
-            DigitalGoodsDistribution.objects.create(user=user, delivery_method=profile_data.get("delivery_method"))
+        profile_class = self.USER_TYPES.get(profile_data["user_type"])
+        if profile_class:
+            profile_class.objects.create(user=user, **profile_data)
 
         return user
 
