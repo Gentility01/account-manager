@@ -41,4 +41,5 @@ urlpatterns = [
         views.DeleteProductTags.as_view(),
         name="delete_tags",
     ),
+
 ]

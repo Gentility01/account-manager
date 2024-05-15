@@ -30,6 +30,7 @@ class ProductForm(ModelForm):
             "best_seller",
             "special_offer",
             "just_arrived",
+
         ]
         widgets = {
             "title": TextInput(

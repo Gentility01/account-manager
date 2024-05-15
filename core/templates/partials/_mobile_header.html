@@ -79,10 +79,13 @@
         <div class="search-box mt-sm-15">
           <select>
             <option>All Categories</option>
-            <option>Computer</option>
-            <option>TV & Smart box</option>
-            <option>Camera & Photography</option>
-            <option>Headphones</option>
+
+            {% for cats in top_categories %}
+              <option><a href="">Computer</a></option>
+            {% endfor %}
+
+
+
           </select>
           <input type="text" placeholder="What do you need?" />
           <button>Search</button>
@@ -150,28 +153,37 @@
               Categories</span></a>
               <ul class="vm-dropdown">
                 {% for category in top_categories %}
-                  <li>
-                    <a href="#">
-                      <img height="15" width="15" src="{{ category.image.url }}" alt="" />
-                      <span>{{ category.title }}</span>
-                      {% if category.subcategories.all %}<b class="caret"></b>{% endif %}
-                    </a>
-                    {% if category.subcategories.all %}
-                      <ul class="mega-menu">
-                        {% for subcategory in category.subcategories.all %}
-                          <li class="megamenu-single">
-                            <span class="mega-menu-title">{{ subcategory.title }}</span>
-                            <ul>
-                              <!-- You can add links for subcategories here -->
-                            </ul>
-                          </li>
-                        {% endfor %}
-                      </ul>
+                    {% if not category.sub_category %}
+                        <li>
+                            <a href="#">
+                                <img height="15" width="15" src="{{ category.image.url }}" alt="" />
+                                <span>{{ category.title }}</span>
+                                {% if category.subcategories.exists %}
+                                    <b class="caret"></b>
+                                {% endif %}
+                            </a>
+                            {% if category.subcategories.exists %}
+                                <ul class="mega-menu">
+                                    {% for subcategory in category.subcategories.all %}
+                                        <li class="megamenu-single">
+                                            <a href="#">
+                                                <span class="mega-menu-title">{{ subcategory.title }}</span>
+                                            </a>
+                                            {% if subcategory.subcategories.exists %}
+                                                <ul>
+                                                    {% for sub_subcategory in subcategory.subcategories.all %}
+                                                        <li><a href="#">{{ sub_subcategory.title }}</a></li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
                     {% endif %}
-                  </li>
                 {% endfor %}
-                {% comment %} <li><a href="#"><i class="fa fa-random"></i>Other</a></li> {% endcomment %}
-              </ul>
+            </ul>
             </li>
           </ul>
         </div>

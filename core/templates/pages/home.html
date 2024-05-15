@@ -326,9 +326,9 @@
                             </h4>
                           </div>
                           <div class="product-thumb">
-                            <a href="#">
+
                               <img src="{{ feature.image.url }}" alt="" />
-                            </a>
+
                             <div class="downsale">
                               <span>-</span>${{ feature.get_percentage }}
                             </div>
@@ -349,7 +349,7 @@
                           </div>
                         </div>
                         <!--single-product-->
-                        <div class="product-single">
+                        {% comment %} <div class="product-single">
                           <div class="product-title">
                             <small><a href="#">Camera</a></small>
                             <h4>
@@ -378,7 +378,7 @@
                             <a href="javascript:void(0);" class="add-to-cart">Add to Cart</a>
                             <a href="javascript:void(0);" class="product-wishlist"><i class="ti-heart"></i></a>
                           </div>
-                        </div>
+                        </div> {% endcomment %}
                       </div>
                     {% endfor %}
                   </div>

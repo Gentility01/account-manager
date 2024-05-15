@@ -6,6 +6,7 @@ from django.views.generic import CreateView
 from django.views.generic import DeleteView
 from django.views.generic import ListView
 from django.views.generic import UpdateView
+from django.views.generic import TemplateView
 
 from core.applications.ecommerce.forms import CategoryForm
 from core.applications.ecommerce.forms import ProductForm

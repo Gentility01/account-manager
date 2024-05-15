@@ -148,9 +148,13 @@
                             </li>
                             <li>
                               Categories:
-                              <a href="#">Tech</a>
-                              <a href="#">Macbook</a>
-                              <a href="#">Laptop</a>
+
+                              {% for cats in top_categories %}
+                                  <a href="#">{{ cats.title}}</a>
+                              {% endfor %}
+
+
+
                               <span>|</span>
                             </li>
                             <li>

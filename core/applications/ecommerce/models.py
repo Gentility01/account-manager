@@ -7,6 +7,7 @@ from django.db.models import CharField
 from django.db.models import DecimalField
 from django.db.models import IntegerField
 from django.db.models import TextField
+from django.db.models import SlugField
 from django.utils.translation import gettext_lazy as _
 from django_resized import ResizedImageField
 
@@ -18,6 +19,7 @@ from core.utils.models import ImageBaseModels
 from core.utils.models import TimeBasedModel
 from core.utils.models import TitleandUIDTimeBasedModel
 from core.utils.models import TitleTimeBasedModel
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -35,6 +37,7 @@ class Tags(TitleTimeBasedModel): ...
 
 
 class Category(TitleTimeBasedModel):
+    slug = SlugField(default="", blank=True)
     image = ResizedImageField(upload_to=MediaHelper.get_image_upload_path)
     sub_category = auto_prefetch.ForeignKey(
         "self",
@@ -47,8 +50,25 @@ class Category(TitleTimeBasedModel):
     class Meta:
         verbose_name_plural = "Categories"
 
+    def save(self, *args, **kwargs):
+        """
+        Saves the instance with a slug generated from the title if no slug is provided.
+
+        Parameters:
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            None
+        """
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+
     def __str__(self):
         return self.title
+
 
 
 class Product(TitleandUIDTimeBasedModel, ImageBaseModels):
@@ -98,6 +118,8 @@ class Product(TitleandUIDTimeBasedModel, ImageBaseModels):
             return round(percentage, decimal_places)
 
         return 0
+
+    # def get_discount_price
 
     def __str__(self):
         return self.title

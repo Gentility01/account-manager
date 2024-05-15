@@ -72,10 +72,13 @@
             <div class="search-box style-2">
               <select>
                 <option>All Categories</option>
-                <option>Computer</option>
-                <option>TV & Smart box</option>
-                <option>Camera & Photography</option>
-                <option>Headphones</option>
+
+                {% for cats in top_categories %}
+                    <a href="homeapp:category_list" cats.slug>{{cats.title}}</a>/option>
+                {% endfor %}
+
+
+
               </select>
               <input type="text" placeholder="What do you need?" />
               <button>Search</button>

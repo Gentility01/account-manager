@@ -39,7 +39,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ["id", "title", "display_image"]
+    list_display = ["id", "slug", "title", "display_image"]
 
     @admin.display(
         description="Image Preview",
