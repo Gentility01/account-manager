@@ -88,7 +88,7 @@ class ProductForm(ModelForm):
 class ProductImagesForm(ModelForm):
     """ Form to get all product images """
     image = MultiFileField(min_num=1, max_num=10, max_file_size=1024*1024*5)
-    
+
     class Meta:
         model = ProductImages
         fields = ["image", "product"]

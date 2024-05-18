@@ -22,7 +22,7 @@ shortuuid==1.0.13  #https://github.com/stochastic-technologies/shortuuid
 
 django-resized==1.0.2 # https://github.com/un1t/django-resized/blob/master/django_resized/forms.py
 
-django-multiupload==0.6.1 
+django-multiupload==0.6.1
 
 # django-ckeditor-5==0.2.13
 django-ckeditor==6.7.1

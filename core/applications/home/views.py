@@ -44,7 +44,7 @@ class ProductShopListView(ListView):
         context = super().get_context_data(**kwargs)
         context['page_obj'] = context['paginator'].page(context['page_obj'].number)  # Set page_obj
         return context
-    
+
 
 class ProductShopDetailView(DetailView):
     model = Product
