@@ -148,13 +148,7 @@
                             </li>
                             <li>
                               Categories:
-
-                              {% for cats in top_categories %}
-                                  <a href="#">{{ cats.title}}</a>
-                              {% endfor %}
-
-
-
+                              {% for cats in top_categories %}<a href="#">{{ cats.title }}</a>{% endfor %}
                               <span>|</span>
                             </li>
                             <li>
@@ -218,6 +212,11 @@
       </div>
     {% endblock modal %}
     {% block inline_javascript %}
+    <script>
+      $(document).ready(function(){
+          $('.venobox').venobox(); 
+      });
+  </script>
     {% endblock inline_javascript %}
     {% block content %}
     {% endblock content %}

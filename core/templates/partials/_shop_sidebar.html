@@ -1,146 +1,150 @@
 {% load static %}
+
 <div class="col-xl-2 col-lg-3">
-    <div class="sidebar">
-
-        <div class="price_filter mt-40">
-            <div class="section-title">
-                <h3>Filter by price</h3>
-            </div>
-            <div class="price_slider_amount">
-                <div class="row align-items-center">
-                    <div class="col-lg-6">
-                        <input type="text" id="amount" name="price"  placeholder="Add Your Price" />
-                    </div>
-                    <div class="col-lg-6">
-                        <button>Filter</button>
-                    </div>
-                </div>
-            </div>
-            <div id="slider-range"></div>
+  <div class="sidebar">
+    <div class="price_filter mt-40">
+      <div class="section-title">
+        <h3>Filter by price</h3>
+      </div>
+      <div class="price_slider_amount">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <input type="text" id="amount" name="price"  placeholder="Add Your Price" />
+          </div>
+          <div class="col-lg-6">
+            <button>Filter</button>
+          </div>
         </div>
-        <div class="list-filter mt-43">
-            <div class="section-title">
-                <h3>Brands</h3>
-            </div>
-            <ul class="list-none mt-25">
-                <li>
-                    <input type="checkbox" id="acer" />
-                    <label for="acer">Acer</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="apple" />
-                    <label for="apple">Apple</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="asus" />
-                    <label for="asus">Asus</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="gionee" />
-                    <label for="gionee">Gionee</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="htc" />
-                    <label for="htc">HTC</label>
-                </li>
-                <li><a href="#">+ Show more</a></li>
-            </ul>
-        </div>
-        <div class="list-filter mt-43">
-            <div class="section-title">
-                <h3>Colors</h3>
-            </div>
-            <ul class="list-none mt-25">
-                <li>
-                    <input type="checkbox" id="black" />
-                    <label for="black">Black</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="pink" />
-                    <label for="pink">Pink</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="white" />
-                    <label for="white">White</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="blue" />
-                    <label for="blue">Blue</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="orange" />
-                    <label for="orange">Orange</label>
-                </li>
-                <li><a href="#">+ Show more</a></li>
-            </ul>
-        </div>
-        <!--latest-products-->
-        <div class="products-list mt-30">
-            <div class="section-title mb-30">
-                <h3>Latest Items</h3>
-            </div>
-            <div class="one-carousel dots-none">
-                <div>
-                    <ul class="list-none">
-
-                        {% for product in just_arrived|slice:":5" %}
-                        <li>
-                            <div class="product-single style-2">
-                                <div class="row align-items-center m-0">
-                                    <div class="col-lg-4 p-0">
-                                        <div class="product-thumb">
-                                            <a href="#"><img src="{{ product.image.url }}" alt="" /></a>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-8 p-0">
-                                        <div class="product-title">
-                                            <h4><a href="#">{{ product.title}} </a></h4>
-                                        </div>
-                                        <div class="product-price-rating">
-                                            <span>${{ product.price }}</span>
-                                            <del>${{product.oldprice}}</del>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        {% endfor %}
-
-
-
-                    </ul>
-                </div>
-                <div>
-                    <ul class="list-none">
-
-                        {% for product in just_arrived2|slice:":5" %}
-                        <li>
-                            <div class="product-single style-2">
-                                <div class="row align-items-center m-0">
-                                    <div class="col-lg-4 p-0">
-                                        <div class="product-thumb">
-                                            <a href="#"><img src="{{ product.image.url}}" alt="" /></a>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-8 p-0">
-                                        <div class="product-title">
-                                            <h4><a href="#">{{ product.title }}</a></h4>
-                                        </div>
-                                        <div class="product-price-rating">
-                                            <span>${{ product.price }}</span>
-                                            <del>${{ product.oldprice }}</del>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        {% endfor %}
-
-
-
-                    </ul>
-                </div>
-            </div>
-        </div>
+      </div>
+      <div id="slider-range"></div>
     </div>
+    <div class="list-filter mt-43">
+      <div class="section-title">
+        <h3>Brands</h3>
+      </div>
+      <ul class="list-none mt-25">
+        <li>
+          <input type="checkbox" id="acer" />
+          <label for="acer">Acer</label>
+        </li>
+        <li>
+          <input type="checkbox" id="apple" />
+          <label for="apple">Apple</label>
+        </li>
+        <li>
+          <input type="checkbox" id="asus" />
+          <label for="asus">Asus</label>
+        </li>
+        <li>
+          <input type="checkbox" id="gionee" />
+          <label for="gionee">Gionee</label>
+        </li>
+        <li>
+          <input type="checkbox" id="htc" />
+          <label for="htc">HTC</label>
+        </li>
+        <li>
+          <a href="#">+ Show more</a>
+        </li>
+      </ul>
+    </div>
+    <div class="list-filter mt-43">
+      <div class="section-title">
+        <h3>Colors</h3>
+      </div>
+      <ul class="list-none mt-25">
+        <li>
+          <input type="checkbox" id="black" />
+          <label for="black">Black</label>
+        </li>
+        <li>
+          <input type="checkbox" id="pink" />
+          <label for="pink">Pink</label>
+        </li>
+        <li>
+          <input type="checkbox" id="white" />
+          <label for="white">White</label>
+        </li>
+        <li>
+          <input type="checkbox" id="blue" />
+          <label for="blue">Blue</label>
+        </li>
+        <li>
+          <input type="checkbox" id="orange" />
+          <label for="orange">Orange</label>
+        </li>
+        <li>
+          <a href="#">+ Show more</a>
+        </li>
+      </ul>
+    </div>
+    <!--latest-products-->
+    <div class="products-list mt-30">
+      <div class="section-title mb-30">
+        <h3>Latest Items</h3>
+      </div>
+      <div class="one-carousel dots-none">
+        <div>
+          <ul class="list-none">
+            {% for product in just_arrived|slice:":5" %}
+              <li>
+                <div class="product-single style-2">
+                  <div class="row align-items-center m-0">
+                    <div class="col-lg-4 p-0">
+                      <div class="product-thumb">
+                        <a href="#">
+                          <img src="{{ product.image.url }}" alt="" />
+                        </a>
+                      </div>
+                    </div>
+                    <div class="col-lg-8 p-0">
+                      <div class="product-title">
+                        <h4>
+                          <a href="#">{{ product.title }}</a>
+                        </h4>
+                      </div>
+                      <div class="product-price-rating">
+                        <span>${{ product.price }}</span>
+                        <del>${{ product.oldprice }}</del>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div>
+          <ul class="list-none">
+            {% for product in just_arrived2|slice:":5" %}
+              <li>
+                <div class="product-single style-2">
+                  <div class="row align-items-center m-0">
+                    <div class="col-lg-4 p-0">
+                      <div class="product-thumb">
+                        <a href="#">
+                          <img src="{{ product.image.url }}" alt="" />
+                        </a>
+                      </div>
+                    </div>
+                    <div class="col-lg-8 p-0">
+                      <div class="product-title">
+                        <h4>
+                          <a href="#">{{ product.title }}</a>
+                        </h4>
+                      </div>
+                      <div class="product-price-rating">
+                        <span>${{ product.price }}</span>
+                        <del>${{ product.oldprice }}</del>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

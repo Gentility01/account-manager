@@ -17,9 +17,13 @@
                 {% if form.errors %}<div class="alert alert-danger" role="alert">{{ form.errors }}</div>{% endif %}
                 {% csrf_token %}
                 <div class="row">
+                  <div class="col-sm-12 mt-30">{{ form.name }}</div>
                   <div class="col-sm-12 mt-30">{{ form.email }}</div>
+                  <div class="col-sm-12 mt-30">{{ form.phone_no }}</div>
+                  <div class="col-sm-12 mt-30">{{ form.country }}</div>
                   <div class="col-sm-12 mt-30">{{ form.password1 }}</div>
                   <div class="col-sm-12 mt-30">{{ form.password2 }}</div>
+                  
                   <div class="col-sm-12 mt-40">
                     <button class="btn-common" type="submit">Sign up</button>
                   </div>
@@ -33,7 +37,7 @@
     <!--contact-us-area end-->
     <!--brands-area start-->
     <div class="container mt-10">
-      have an account <a href="{% url  'account_login' %}">
+      have an account <a href="{% url 'account_login' %}">Login here</a>
     </div>
     <!--brands-area end-->
   {% endblock content %}

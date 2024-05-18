@@ -6,14 +6,16 @@ from django.views.generic import CreateView
 from django.views.generic import DeleteView
 from django.views.generic import ListView
 from django.views.generic import UpdateView
-from django.views.generic import TemplateView
+from django.views.generic import FormView
 
 from core.applications.ecommerce.forms import CategoryForm
+from core.applications.ecommerce.forms import ProductImagesForm
 from core.applications.ecommerce.forms import ProductForm
 from core.applications.ecommerce.forms import TagsForm
 from core.applications.ecommerce.models import Category
 from core.applications.ecommerce.models import Product
 from core.applications.ecommerce.models import Tags
+from core.applications.ecommerce.models import ProductImages
 from core.applications.users.models import ContentManager
 
 
@@ -54,7 +56,7 @@ class ListCategoryView(ContentManagerRequiredMixin, ListView):
 
     model = Category
     template_name = "pages/ecommerce/category_list.html"
-    paginate_by = 5
+    paginate_by = 10
 
     def get_queryset(self):
         return Category.objects.annotate(total_products=Count("product")).order_by(
@@ -78,6 +80,45 @@ class DeleteCategoryView(ContentManagerRequiredMixin, DeleteView):
 # ---------------------- Category views ends here ----------------
 
 
+class ProductImagesCreateView(ContentManagerRequiredMixin, FormView):
+    template_name = "pages/ecommerce/create_product_image.html"
+    form_class = ProductImagesForm
+    success_url = reverse_lazy("ecommerce:list_product_images")
+
+    def form_valid(self, form):
+        product = form.cleaned_data['product']
+        for each in self.request.FILES.getlist('image'):
+            ProductImages.objects.create(image=each, product=product)
+        return super().form_valid(form)
+
+
+class ListProductImages(ContentManagerRequiredMixin, ListView):
+    model = ProductImages
+    template_name = "pages/ecommerce/list_product_imges.html"
+    paginate_by = 10
+
+
+class UpdateProductImages(ContentManagerRequiredMixin, UpdateView):
+    model = ProductImages
+    form_class = ProductImagesForm  # Use form_class instead of forms
+    template_name = "pages/ecommerce/create_product_image.html"
+    success_url = reverse_lazy("ecommerce:list_product_images")
+
+    def form_valid(self, form):
+        product = form.cleaned_data['product']
+        images = self.request.FILES.getlist('image')
+        for image in images:
+            ProductImages.objects.create(product=product, image=image)
+        return super().form_valid(form)
+
+class DeleteProductImages(ContentManagerRequiredMixin, DeleteView):
+    model = ProductImages
+    template_name = "pages/ecommerce/delete_product_image.html"
+    success_url = reverse_lazy("ecommerce:list_product_images")
+
+
+
+
 class ListProductView(ContentManagerRequiredMixin, ListView):
     """
     A view for listing all products.
@@ -85,7 +126,7 @@ class ListProductView(ContentManagerRequiredMixin, ListView):
 
     model = Product
     template_name = "pages/ecommerce/product_list.html"
-    paginate_by = 5
+    paginate_by = 10
 
 
 class AddProductView(ContentManagerRequiredMixin, CreateView):
@@ -106,8 +147,8 @@ class EditProductView(ContentManagerRequiredMixin, UpdateView):
 
     model = Product
     form_class = ProductForm
-    template_name = "pages/ecommerce/edit_product.html"
-    success_url = reverse_lazy("users:dashboard_view:")
+    template_name = "pages/ecommerce/add_product.html"
+    success_url = reverse_lazy("ecommerce:list_product")
 
 
 class DeleteProductView(ContentManagerRequiredMixin, DeleteView):
@@ -117,7 +158,7 @@ class DeleteProductView(ContentManagerRequiredMixin, DeleteView):
 
     model = Product
     template_name = "pages/ecommerce/delete_product.html"
-    success_url = reverse_lazy("users:dashboard_view:")
+    success_url = reverse_lazy("ecommerce:list_product")
 
 
 class ProductDetailView(ContentManagerRequiredMixin, ListView):
@@ -157,7 +198,7 @@ class ListProductTags(ContentManagerRequiredMixin, ListView):
     model = Tags
     form_class = TagsForm
     template_name = "pages/ecommerce/tags_list.html"
-    paginate_by = 5
+    paginate_by = 10
 
 
 # ------------------------------- Tag views ends here

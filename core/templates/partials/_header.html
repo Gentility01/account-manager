@@ -72,13 +72,7 @@
             <div class="search-box style-2">
               <select>
                 <option>All Categories</option>
-
-                {% for cats in top_categories %}
-                    <a href="homeapp:category_list" cats.slug>{{cats.title}}</a>/option>
-                {% endfor %}
-
-
-
+                {% for cats in top_categories %}<a href="homeapp:category_list" cats.slug>{{ cats.title }}</a>/option>{% endfor %}
               </select>
               <input type="text" placeholder="What do you need?" />
               <button>Search</button>

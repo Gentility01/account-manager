@@ -6,6 +6,8 @@ from django.forms import CharField
 from django.forms import EmailField
 from django.forms import Textarea
 from django.utils.translation import gettext_lazy as _
+from django_countries.fields import CountryField
+from django_countries.widgets import CountrySelectWidget
 
 from .models import Accountant
 from .models import Administrator
@@ -44,12 +46,24 @@ class CustomSignupBaseForm(SignupForm):
     """
     Base form for custom signup forms.
     """
+    name = CharField(max_length=255, label="Name", required=True)
+    phone_no = CharField(max_length=20, label="Phone number", required=False)
+    country = CountryField(blank_label='(select country)').formfield(widget=CountrySelectWidget())
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Customize form fields
+        self.fields["name"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Enter your username"},
+        )
         self.fields["email"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Enter your email"},
+        )
+        self.fields["phone_no"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Enter your phone number"},
+        )
+        self.fields["country"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Select your country"},
         )
         self.fields["password1"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Enter your password"},

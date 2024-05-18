@@ -77,6 +77,9 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.mfa",
     "allauth.socialaccount",
+    "multiupload",
+    "ckeditor",
+    "django_countries",
 ]
 
 LOCAL_APPS = [
@@ -288,3 +291,21 @@ SOCIALACCOUNT_FORMS = {"signup": "core.applications.users.forms.UserSocialSignup
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+#ckeditor
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_CONFIGS = {
+    "default":{
+        "skin":"moono",
+        "codeSnippet_theme":"monokai",
+        "toolbar":"all",
+        "extraPlugins":",".join(
+            [
+            "codesnippet",
+            "widget",
+            "dialog"
+            ]
+        ),
+
+    }
+}

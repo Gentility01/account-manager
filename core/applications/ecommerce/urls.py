@@ -42,4 +42,9 @@ urlpatterns = [
         name="delete_tags",
     ),
 
+    path("create-product-image", views.ProductImagesCreateView.as_view(), name="create_product_image"),
+    path("list-product-image", views.ListProductImages.as_view(), name="list_product_images"),
+    path("update-product-image/<int:pk>/", views.UpdateProductImages.as_view(), name="update_product_image"),
+    path("delete-product-image/<int:pk>/", views.DeleteProductImages.as_view(), name="delete_product_image"),
+
 ]

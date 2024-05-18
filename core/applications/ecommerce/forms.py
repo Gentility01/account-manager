@@ -4,14 +4,21 @@ from django.forms import ModelForm
 from django.forms import NumberInput
 from django.forms import Select
 from django.forms import Textarea
+from django.forms import CharField
 from django.forms import TextInput
+from multiupload.fields import MultiFileField
+
 
 from core.applications.ecommerce.models import Category
 from core.applications.ecommerce.models import Product
 from core.applications.ecommerce.models import Tags
+from core.applications.ecommerce.models import ProductImages
+from ckeditor.widgets import CKEditorWidget
 
 
 class ProductForm(ModelForm):
+    description = CharField(label='Description',
+                   widget=Textarea(attrs={'class': 'ckeditor'}))
     class Meta:
         model = Product
         fields = [
@@ -39,12 +46,12 @@ class ProductForm(ModelForm):
             "image": FileInput(
                 attrs={"class": "form-control", "id": "myFile", "name": "filename"},
             ),
-            "description": Textarea(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Enter product description",
-                },
-            ),
+            # "description": CKEditorWidget(
+            #     attrs={
+            #         "class": "form-control",
+            #         "placeholder": "Enter product description",
+            #     },
+            # ),
             "price": NumberInput(
                 attrs={"class": "form-control", "placeholder": "Enter product price"},
             ),
@@ -54,7 +61,7 @@ class ProductForm(ModelForm):
                     "placeholder": "Enter product old price",
                 },
             ),
-            "spacification": Textarea(
+            "spacification": CKEditorWidget(
                 attrs={
                     "class": "form-control",
                     "placeholder": "Enter product spacification",
@@ -76,6 +83,23 @@ class ProductForm(ModelForm):
             "best_seller": CheckboxInput(),
             "special_offer": CheckboxInput(),
             "just_arrived": CheckboxInput(),
+        }
+
+class ProductImagesForm(ModelForm):
+    """ Form to get all product images """
+    image = MultiFileField(min_num=1, max_num=10, max_file_size=1024*1024*5)
+    
+    class Meta:
+        model = ProductImages
+        fields = ["image", "product"]
+
+        widgets = {
+            "product": Select(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter product",
+                },
+            ),
         }
 
 

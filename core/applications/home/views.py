@@ -1,8 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, ListView
-from core.applications.ecommerce.models import Product, Category
+from django.views.generic import TemplateView, ListView, DetailView
+from core.applications.ecommerce.models import Product, Category, ProductImages
 from django.db.models.query import QuerySet
 from typing import Optional
 
@@ -43,6 +43,18 @@ class ProductShopListView(ListView):
         """Add pagination context data."""
         context = super().get_context_data(**kwargs)
         context['page_obj'] = context['paginator'].page(context['page_obj'].number)  # Set page_obj
+        return context
+    
+
+class ProductShopDetailView(DetailView):
+    model = Product
+    template_name = "pages/shop_details.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = self.get_object()
+        images = ProductImages.objects.filter(product=product)
+        context['product_images'] = images
         return context
 
 class ProductsCategoryList(ListView):

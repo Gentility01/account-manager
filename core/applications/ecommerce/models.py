@@ -21,6 +21,8 @@ from core.utils.models import TitleandUIDTimeBasedModel
 from core.utils.models import TitleTimeBasedModel
 from django.utils.text import slugify
 
+from ckeditor_uploader.fields import RichTextUploadingField
+
 # Create your models here.
 
 
@@ -84,10 +86,10 @@ class Product(TitleandUIDTimeBasedModel, ImageBaseModels):
         on_delete=SET_NULL,
         null=True,
     )
-    description = TextField(default="", blank=True)
+    description = RichTextUploadingField('Description', default="", null=True)
     price = DecimalField(max_digits=100, decimal_places=2)
     oldprice = DecimalField(max_digits=100, decimal_places=2)
-    spacification = TextField(default="", blank=True)
+    spacification = RichTextUploadingField('specification', default="", null=True )
     tags = auto_prefetch.ForeignKey(
         Tags,
         verbose_name=_("Tag"),
