@@ -80,6 +80,7 @@ THIRD_PARTY_APPS = [
     "multiupload",
     "ckeditor",
     "django_countries",
+    "taggit",
 ]
 
 LOCAL_APPS = [

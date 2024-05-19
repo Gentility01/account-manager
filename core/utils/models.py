@@ -19,6 +19,7 @@ class TimeBasedModel(auto_prefetch.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta(auto_prefetch.Model.Meta):
+
         abstract = True
 
     objects = auto_prefetch.Manager()
@@ -43,7 +44,7 @@ class TitleandUIDTimeBasedModel(TimeBasedModel):
 
     class Meta(auto_prefetch.Model.Meta):
         abstract = True
-        ordering = ["title", "-created_at"]
+        ordering = ["title", "-created_at", "-updated_at"]
 
     def __str__(self):
         return self.id

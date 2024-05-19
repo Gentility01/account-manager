@@ -207,9 +207,7 @@
                               <span>-</span>${{ arrived.get_pecentage }}
                             </div>
                             <div class="product-quick-view">
-                              <a href="javascript:void(0);"
-                                 data-toggle="modal"
-                                 data-target="#quick-view">detail view</a>
+                              <a href="{% url 'homeapp:product_detail' arrived.pk %}">detail view</a>
                             </div>
                           </div>
                           <div class="product-price-rating">
@@ -271,7 +269,7 @@
                               <span>-</span>${{ on_sale.get_percentage }}
                             </div>
                             <div class="product-quick-view">
-                              <a href="" data-toggle="modal" data-target="#quick-view">detail view</a>
+                              <a href="{% url 'homeapp:product_detail' on_sale.pk %}" >detail view</a>
                             </div>
                           </div>
                           <div class="product-price-rating">
@@ -329,9 +327,7 @@
                               <span>-</span>${{ feature.get_percentage }}
                             </div>
                             <div class="product-quick-view">
-                              <a href="javascript:void(0);"
-                                 data-toggle="modal"
-                                 data-target="#quick-view">detail view</a>
+                              <a href="{% url 'homeapp:product_detail' feature.pk %}">detail view</a>
                             </div>
                           </div>
                           <div class="product-price-rating">
@@ -455,9 +451,7 @@
                         <span>-</span>${{ product.get_percentage }}
                       </div>
                       <div class="product-quick-view">
-                        <a href="javascript:void(0);"
-                           data-toggle="modal"
-                           data-target="#quick-view">detail view</a>
+                        <a href="{% url 'homeapp:product_detail' product.pk %}">detail view</a>
                       </div>
                     </div>
                     <div class="product-price-rating">

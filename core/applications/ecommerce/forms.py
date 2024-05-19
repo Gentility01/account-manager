@@ -14,11 +14,13 @@ from core.applications.ecommerce.models import Product
 from core.applications.ecommerce.models import Tags
 from core.applications.ecommerce.models import ProductImages
 from ckeditor.widgets import CKEditorWidget
+from taggit.forms import TagField
 
 
 class ProductForm(ModelForm):
     description = CharField(label='Description',
                    widget=Textarea(attrs={'class': 'ckeditor'}))
+    tags = TagField(required=False)
     class Meta:
         model = Product
         fields = [
@@ -46,12 +48,12 @@ class ProductForm(ModelForm):
             "image": FileInput(
                 attrs={"class": "form-control", "id": "myFile", "name": "filename"},
             ),
-            # "description": CKEditorWidget(
-            #     attrs={
-            #         "class": "form-control",
-            #         "placeholder": "Enter product description",
-            #     },
-            # ),
+            "description": CKEditorWidget(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter product description",
+                },
+            ),
             "price": NumberInput(
                 attrs={"class": "form-control", "placeholder": "Enter product price"},
             ),
@@ -67,7 +69,7 @@ class ProductForm(ModelForm):
                     "placeholder": "Enter product spacification",
                 },
             ),
-            "tags": Select(attrs={"class": "form-control"}),
+            "tags": TextInput(attrs={"class": "form-control"}),
             "product_status": Select(
                 attrs={"class": "form-control", "placeholder": "Enter product status"},
             ),

@@ -100,7 +100,7 @@
                     <div class="col-lg-8 p-0">
                       <div class="product-title">
                         <h4>
-                          <a href="#">{{ product.title }}</a>
+                          <a href="{% url 'homeapp:product_detail' product.pk %}">{{ product.title }}</a>
                         </h4>
                       </div>
                       <div class="product-price-rating">

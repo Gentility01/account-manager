@@ -4,7 +4,7 @@ from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.views.generic import DeleteView
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.views.generic import UpdateView
 from django.views.generic import FormView
 
@@ -129,6 +129,8 @@ class ListProductView(ContentManagerRequiredMixin, ListView):
     paginate_by = 10
 
 
+
+
 class AddProductView(ContentManagerRequiredMixin, CreateView):
     """
     A view for adding a new product.
@@ -168,6 +170,8 @@ class ProductDetailView(ContentManagerRequiredMixin, ListView):
 
     model = Product
     template_name = "ecommerce/product_detail.html"
+
+
 
 
 # --------------------------- Product views ends here -------

@@ -107,7 +107,7 @@
                     <i class="fa fa-star-o"></i>
                     <span>(5)</span>
                   </div>
-                  <div class="product-text">{{ product.spacification }}</div>
+                  <div class="product-text">{{ product.description|safe|truncatechars:500 }}</div>
                 </div>
                 <div class="col-xl-3 col-lg-4 col-md-4">
                   <div class="product-action stuck text-left">

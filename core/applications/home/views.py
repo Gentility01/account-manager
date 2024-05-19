@@ -53,9 +53,14 @@ class ProductShopDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = self.get_object()
+        category = product.category
         images = ProductImages.objects.filter(product=product)
+        related_products = Product.objects.filter(category=category).exclude(id=product.id)
         context['product_images'] = images
+        context["related_product"] = related_products
         return context
+
+
 
 class ProductsCategoryList(ListView):
     model = Product
@@ -78,3 +83,16 @@ class ProductsCategoryList(ListView):
         context['category'] = category
         context['page_obj'] = context['paginator'].page(context['page_obj'].number)  # Set page_obj
         return context
+
+
+class ProductTagsList(ListView):
+    model = Product
+    template_name = "pages/shop_by_tag.html"
+    context_object_name = "products"
+    paginate_by = 8
+
+    def get_queryset(self):
+        # get the category base on the slug in the url
+        tag_slug = self.kwargs["tag_slug"]
+        queryset = Product.objects.filter(tags__slug=tag_slug).order_by("created_at")
+        return queryset

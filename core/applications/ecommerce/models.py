@@ -22,6 +22,7 @@ from core.utils.models import TitleTimeBasedModel
 from django.utils.text import slugify
 
 from ckeditor_uploader.fields import RichTextUploadingField
+from taggit.managers import  TaggableManager
 
 # Create your models here.
 
@@ -101,6 +102,7 @@ class Product(TitleandUIDTimeBasedModel, ImageBaseModels):
         default=Status.IN_REVIEW,
         max_length=10,
     )
+    tags = TaggableManager(blank=True, help_text="A comma-separated list of tags.")
     in_stock = BooleanField(default=True)
     featured = BooleanField(default=False)
     digital = BooleanField(default=True)

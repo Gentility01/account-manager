@@ -9,7 +9,7 @@ def product_list(request):
     :param request: HTTP request object
     :return: Dictionary containing the product list
     """
-    products = Product.objects.all()
+    products = Product.objects.all().order_by("-created_at", "-updated_at")
     in_stock = products.filter(in_stock=True)
 
     best_seller = products.filter(best_seller=True)

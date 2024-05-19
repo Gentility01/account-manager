@@ -28,3 +28,5 @@ django-multiupload==0.6.1
 django-ckeditor==6.7.1
 
 django-countries==7.6.1
+
+django-taggit==5.0.1
