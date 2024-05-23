@@ -69,14 +69,20 @@
             </div>
           </div>
           <div class="col-lg-6">
-            <div class="search-box style-2">
+            <form method="Get"
+                  action="{% url 'homeapp:search' %}"
+                  class="search-box style-2">
               <select>
                 <option>All Categories</option>
-                {% for cats in top_categories %}<a href="homeapp:category_list" cats.slug>{{ cats.title }}</a>/option>{% endfor %}
+                {% for cats in top_categories %}
+                  <option>
+                    <a href="homeapp:category_list" cats.slug>{{ cats.title }}</a>
+                  </option>
+                {% endfor %}
               </select>
-              <input type="text" placeholder="What do you need?" />
-              <button>Search</button>
-            </div>
+              <input type="text" name="q" placeholder="What do you need?" />
+              <button type="submit">Search</button>
+            </form>
           </div>
           <div class="col-lg-3">
             <div class="mini-cart pull-right">

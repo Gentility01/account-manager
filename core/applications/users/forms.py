@@ -4,7 +4,6 @@ from django.contrib.auth import forms as admin_forms
 from django.core.exceptions import ValidationError
 from django.forms import CharField
 from django.forms import EmailField
-from django.forms import Textarea
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
@@ -46,15 +45,18 @@ class CustomSignupBaseForm(SignupForm):
     """
     Base form for custom signup forms.
     """
+
     name = CharField(max_length=255, label="Name", required=True)
     phone_no = CharField(max_length=20, label="Phone number", required=False)
-    country = CountryField(blank_label='(select country)').formfield(widget=CountrySelectWidget())
+    country = CountryField(blank_label="(select country)").formfield(
+        widget=CountrySelectWidget(),
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Customize form fields
         self.fields["name"].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Enter your username"},
+            {"class": "form-control", "placeholder": "Enter your name"},
         )
         self.fields["email"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Enter your email"},
@@ -63,7 +65,7 @@ class CustomSignupBaseForm(SignupForm):
             {"class": "form-control", "placeholder": "Enter your phone number"},
         )
         self.fields["country"].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Select your country"},
+            {"class": "form-control"},
         )
         self.fields["password1"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Enter your password"},
@@ -71,6 +73,14 @@ class CustomSignupBaseForm(SignupForm):
         self.fields["password2"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Confirm your password"},
         )
+
+    def save(self, request):
+        user = super().save(request)
+        user.name = self.cleaned_data.get("name")
+        user.phone_no = self.cleaned_data.get("phone_no")
+        user.country = self.cleaned_data.get("country")
+        user.save()
+        return user
 
 
 class UserSignupForm(CustomSignupBaseForm):
@@ -82,11 +92,6 @@ class UserSignupForm(CustomSignupBaseForm):
 
 
 class CustomSignupForm(CustomSignupBaseForm):
-    """
-    Custom form for handling additional profile data during signup.
-    """
-
-    # Define user types as a class variable
     USER_TYPES = {
         "administrator": Administrator,
         "customer_support_representative": CustomerSupportRepresentative,
@@ -99,28 +104,25 @@ class CustomSignupForm(CustomSignupBaseForm):
         "digital_goods_distribution": DigitalGoodsDistribution,
     }
 
-    user_type = CharField(
-        max_length=50,
-        required=True,
-    )  # Add a field to select user type
-
-    department = CharField(max_length=100, required=False)
-    expertise_area = CharField(max_length=255, required=False)
-    marketing_strategy = CharField(widget=Textarea, required=False)
-    financial_software_used = CharField(max_length=100, required=False)
-    technical_skills = CharField(widget=Textarea, required=False)
-    languages_spoken = CharField(max_length=100, required=False)
-    affiliate_code = CharField(max_length=20, required=False)
-    delivery_method = CharField(max_length=50, required=False)
+    user_type = CharField(max_length=50, required=True)
+    expertise_area = CharField(
+        max_length=255,
+        required=False,
+    )  # Used in ContentManagerAccount
+    financial_software_used = CharField(
+        max_length=100,
+        required=False,
+    )  # Used in AccountantAccount
 
     class InvalidUserTypeValidationError(ValidationError):
-        message = "Invalid user type"
+        pass
 
     def clean(self):
         cleaned_data = super().clean()
         user_type = cleaned_data.get("user_type")
         if user_type not in self.USER_TYPES:
-            raise self.InvalidUserTypeValidationError
+            error_message = "Invalid user type"
+            raise self.InvalidUserTypeValidationError(error_message)
         return cleaned_data
 
     def save(self, request):
@@ -129,7 +131,14 @@ class CustomSignupForm(CustomSignupBaseForm):
 
         profile_class = self.USER_TYPES.get(profile_data["user_type"])
         if profile_class:
-            profile_class.objects.create(user=user, **profile_data)
+            profile_instance = profile_class(user=user)
+            if "expertise_area" in profile_data:
+                profile_instance.expertise_area = profile_data["expertise_area"]
+            if "financial_software_used" in profile_data:
+                profile_instance.financial_software_used = profile_data[
+                    "financial_software_used"
+                ]
+            profile_instance.save()
 
         return user
 

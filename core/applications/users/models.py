@@ -5,9 +5,10 @@ from django.db.models import CharField
 from django.db.models import EmailField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django_countries.fields import CountryField
 
 from core.utils.models import UIDTimeBasedModel
-from django_countries.fields import CountryField
+
 from .managers import UserManager
 
 

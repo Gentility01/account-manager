@@ -1,21 +1,25 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Avg
 from django.db.models import Count
 from django.http import HttpResponseForbidden
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.views.generic import DeleteView
-from django.views.generic import ListView, DetailView
-from django.views.generic import UpdateView
 from django.views.generic import FormView
+from django.views.generic import ListView
+from django.views.generic import UpdateView
 
 from core.applications.ecommerce.forms import CategoryForm
-from core.applications.ecommerce.forms import ProductImagesForm
 from core.applications.ecommerce.forms import ProductForm
+from core.applications.ecommerce.forms import ProductImagesForm
+from core.applications.ecommerce.forms import ProductReviewForm
 from core.applications.ecommerce.forms import TagsForm
 from core.applications.ecommerce.models import Category
 from core.applications.ecommerce.models import Product
-from core.applications.ecommerce.models import Tags
 from core.applications.ecommerce.models import ProductImages
+from core.applications.ecommerce.models import ProductReview
+from core.applications.ecommerce.models import Tags
 from core.applications.users.models import ContentManager
 
 
@@ -86,8 +90,8 @@ class ProductImagesCreateView(ContentManagerRequiredMixin, FormView):
     success_url = reverse_lazy("ecommerce:list_product_images")
 
     def form_valid(self, form):
-        product = form.cleaned_data['product']
-        for each in self.request.FILES.getlist('image'):
+        product = form.cleaned_data["product"]
+        for each in self.request.FILES.getlist("image"):
             ProductImages.objects.create(image=each, product=product)
         return super().form_valid(form)
 
@@ -105,18 +109,17 @@ class UpdateProductImages(ContentManagerRequiredMixin, UpdateView):
     success_url = reverse_lazy("ecommerce:list_product_images")
 
     def form_valid(self, form):
-        product = form.cleaned_data['product']
-        images = self.request.FILES.getlist('image')
+        product = form.cleaned_data["product"]
+        images = self.request.FILES.getlist("image")
         for image in images:
             ProductImages.objects.create(product=product, image=image)
         return super().form_valid(form)
+
 
 class DeleteProductImages(ContentManagerRequiredMixin, DeleteView):
     model = ProductImages
     template_name = "pages/ecommerce/delete_product_image.html"
     success_url = reverse_lazy("ecommerce:list_product_images")
-
-
 
 
 class ListProductView(ContentManagerRequiredMixin, ListView):
@@ -127,8 +130,6 @@ class ListProductView(ContentManagerRequiredMixin, ListView):
     model = Product
     template_name = "pages/ecommerce/product_list.html"
     paginate_by = 10
-
-
 
 
 class AddProductView(ContentManagerRequiredMixin, CreateView):
@@ -172,8 +173,6 @@ class ProductDetailView(ContentManagerRequiredMixin, ListView):
     template_name = "ecommerce/product_detail.html"
 
 
-
-
 # --------------------------- Product views ends here -------
 
 
@@ -206,3 +205,62 @@ class ListProductTags(ContentManagerRequiredMixin, ListView):
 
 
 # ------------------------------- Tag views ends here
+
+
+class AddReviewsView(LoginRequiredMixin, CreateView):
+    model = ProductReview
+    form_class = ProductReviewForm
+
+    def form_valid(self, form):
+        """
+        Saves the form data and returns a JSON response containing the user's username,
+        the review text, the rating,
+        and the average rating for the product.
+
+        Parameters:
+            form (ProductReviewForm): The form containing the review data.
+
+        Returns:
+            JsonResponse: A JSON response containing the following keys:
+                - bool (bool): True if the form is valid, False otherwise.
+                - context (dict): A dictionary containing the user's username,
+                  the review text, and the rating.
+                - average_review (dict): A dictionary containing the average rating for
+                the product.
+
+        Raises:
+            Product.DoesNotExist: If the product with the
+            given primary key does not exist.
+        """
+        # Check if the user is authenticated and if the user has added a review already
+        product = form.instance.product
+
+        form.instance.user = self.request.user
+        form.instance.product = Product.objects.get(pk=self.kwargs["pk"])
+        self.object = form.save()
+
+        average_review = ProductReview.objects.filter(product=product).aggregate(
+            rating=Avg("rating"),
+        )
+
+        context = {
+            "user": self.request.user.name,
+            "review": form.instance.review,
+            "rating": form.instance.rating,
+        }
+
+        return JsonResponse(
+            {
+                "bool": True,
+                "context": context,
+                "average_review": average_review,
+            },
+        )
+
+    def form_invalid(self, form):
+        return JsonResponse(
+            {
+                "bool": False,
+                "errors": form.errors,
+            },
+        )

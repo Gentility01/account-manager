@@ -9,40 +9,33 @@
       <div class="price_slider_amount">
         <div class="row align-items-center">
           <div class="col-lg-6">
-            <input type="text" id="amount" name="price"  placeholder="Add Your Price" />
+            <input type="text" id="max_price" min={{ min_max_price.price__min }} max={{ min_max_price.price__max }}  name="price" onkeyup="range.value=this.value" value="{{ min_max_price.price__min|floatformat:2 }}" placeholder="Add Your Price" />
           </div>
           <div class="col-lg-6">
-            <button>Filter</button>
+            <button id="price-filter-btn" type="button">Filter</button>
           </div>
         </div>
       </div>
-      <div id="slider-range"></div>
+      <div>
+        <input type="range" class="slider-range" name="range" id="range" min={{ min_max_price.price__min }} max={{ min_max_price.price__max }}  value="{{ min_max_price.price__min|floatformat:2 }}" oninput="max_price.value=this.value" />
+        from${{ min_max_price.price__min|floatformat:2 }} to ${{ min_max_price.price__max|floatformat:2 }}
+      </div>
     </div>
     <div class="list-filter mt-43">
       <div class="section-title">
-        <h3>Brands</h3>
+        <h3>Categories</h3>
       </div>
       <ul class="list-none mt-25">
-        <li>
-          <input type="checkbox" id="acer" />
-          <label for="acer">Acer</label>
-        </li>
-        <li>
-          <input type="checkbox" id="apple" />
-          <label for="apple">Apple</label>
-        </li>
-        <li>
-          <input type="checkbox" id="asus" />
-          <label for="asus">Asus</label>
-        </li>
-        <li>
-          <input type="checkbox" id="gionee" />
-          <label for="gionee">Gionee</label>
-        </li>
-        <li>
-          <input type="checkbox" id="htc" />
-          <label for="htc">HTC</label>
-        </li>
+        {% for cats in top_categories %}
+          <li>
+            <input type="checkbox"
+                   data-filter="category"
+                   class="filter-checkbox"
+                   name="checkbox"
+                   value="{{ cats.id }}" />
+            <label for="apple">{{ cats.title }}</label>
+          </li>
+        {% endfor %}
         <li>
           <a href="#">+ Show more</a>
         </li>

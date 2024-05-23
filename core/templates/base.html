@@ -211,13 +211,6 @@
         </div>
       </div>
     {% endblock modal %}
-    {% block inline_javascript %}
-    <script>
-      $(document).ready(function(){
-          $('.venobox').venobox();
-      });
-  </script>
-    {% endblock inline_javascript %}
     {% block content %}
     {% endblock content %}
     <!--footer-area start-->
@@ -415,6 +408,14 @@
       <script src="{% static 'assets/js/plugins.js' %}"></script>
       <!-- main js -->
       <script src="{% static 'assets/js/main.js' %}"></script>
+      <script src="{% static 'assets/js/functions.js' %}"></script>
+      {% block inline_javascript %}
+        <script>
+          $(document).ready(function() {
+            $('.venobox').venobox();
+          });
+        </script>
+      {% endblock inline_javascript %}
     {% endblock javascript %}
   </body>
 </html>

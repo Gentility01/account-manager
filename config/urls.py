@@ -17,8 +17,7 @@ urlpatterns = [
         "ecommerce/", include("core.applications.ecommerce.urls", namespace="ecommerce")
     ),
     path("accounts/", include("allauth.urls")),
-
-    #ckeditor
+    # ckeditor
     path("ckeditor/", include("ckeditor_uploader.urls")),
     # Your stuff: custom urls includes go here
     # ...

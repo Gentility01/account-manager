@@ -110,7 +110,7 @@
                   </div>
                   <div class="flex items-center justify-between gap20 flex-grow">
                     <div class="name">
-                      <a href="#" class="body-text">{{ request.user.email }}</a>
+                      <a href="#" class="body-text">{{ request.user.name }}</a>
                     </div>
                   </div>
                 </li>
@@ -419,8 +419,8 @@
                 <img src="{% static 'dashboard/images/avatar/user-1.png' %}" alt="" />
               </span>
               <span class="flex flex-column">
-                <span class="body-title mb-2">{{ request.user.email }}</span>
-                <span class="text-tiny">Admin</span>
+                <span class="body-title mb-2">{{ request.user.name }}</span>
+                <span class="text-tiny">{{ request.user.email }}</span>
               </span>
             </span>
           </button>

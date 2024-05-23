@@ -1,3 +1,4 @@
+from django.db.models import IntegerChoices
 from django.db.models import TextChoices
 
 
@@ -15,10 +16,9 @@ class Status(TextChoices):
     PUBLISHED = ("PUBLISHED", "PUBLISHED")
 
 
-Rating = (
-    (1, "⭐"),
-    (2, "⭐⭐"),
-    (3, "⭐⭐⭐"),
-    (4, "⭐⭐⭐⭐"),
-    (5, "⭐⭐⭐⭐⭐"),
-)
+class Rating(IntegerChoices):
+    ONE_STAR = 1, "⭐"
+    TWO_STARS = 2, "⭐⭐"
+    THREE_STARS = 3, "⭐⭐⭐"
+    FOUR_STARS = 4, "⭐⭐⭐⭐"
+    FIVE_STARS = 5, "⭐⭐⭐⭐⭐"

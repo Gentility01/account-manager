@@ -35,10 +35,10 @@
               </div>
             </div>
             <div class="tab-content">
-              <div id="grid-products" class="tab-pane">
-                <div class="row">
-                  {% for product in products %}
-                    {% if product %}
+              {% if all_products %}
+                <div id="grid-products" class="tab-pane">
+                  <div class="row">
+                    {% for product in all_products %}
                       <div class="col-xl-3 col-md-4 col-sm-6">
                         <div class="product-single">
                           <div class="product-title">
@@ -75,74 +75,79 @@
                           </div>
                         </div>
                       </div>
-                    {% else %}
-                      <p>No product yet for >{{ category.title }}</p>
-                    {% endif %}
-                  {% endfor %}
+                    {% endfor %}
+                  </div>
                 </div>
-              </div>
-              <div id="list-products" class="tab-pane active">
-                {% for product in products %}
-                  <div class="product-single wide-style">
-                    <div class="row align-items-center">
-                      <div class="col-xl-3 col-lg-6 col-md-6">
-                        <div class="product-thumb">
-                          <a href="#">
-                            <img src="{{ product.image.url }}" alt="" />
-                          </a>
-                          <div class="product-quick-view">
-                            <a href="{% url 'homeapp:product_detail' product.pk %}">detail view</a>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-xl-6 col-lg-8 col-md-8 product-desc mt-md-50 sm-mt-50">
-                        <a href="#" class="add-to-wishlist"><i class="icon_heart_alt"></i></a>
-                        <div class="product-title">
-                          <small><a href="#">{{ product.category.title }}</a></small>
-                          <h4>
-                            <a href="#">{{ product.title }}</a>
-                          </h4>
-                        </div>
-                        <div class="product-rating">
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star"></i>
-                          <i class="fa fa-star-o"></i>
-                          <span>(5)</span>
-                        </div>
-                        <div class="product-text">{{ product.description|safe|truncatechars:200 }}</div>
-                      </div>
-                      <div class="col-xl-3 col-lg-4 col-md-4">
-                        <div class="product-action stuck text-left">
-                          <div class="free-delivery">
-                            <a href="#"><i class="ti-truck"></i> Free Delivery</a>
-                          </div>
-                          <div class="product-price-rating">
-                            <div>
-                              <del>{{ product.get_percentage }}</del>
+                <div id="list-products" class="tab-pane active">
+                  {% for product in all_products %}
+                    <div class="product-single wide-style">
+                      <div class="row align-items-center">
+                        <div class="col-xl-3 col-lg-6 col-md-6">
+                          <div class="product-thumb">
+                            <a href="#">
+                              <img src="{{ product.image.url }}" alt="" />
+                            </a>
+                            <div class="product-quick-view">
+                              <a href="{% url 'homeapp:product_detail' product.pk %}">detail view</a>
                             </div>
-                            <span>${{ product.price }}</span>
                           </div>
-                          <div class="product-stock">
-                            <p>
-                              Avability:
-                              {% if product.in_stock == True %}
-                                <span>In stock</span>
-                              </p>
-                            {% else %}
-                              <span>Not in stock</span>
-                            </p>
-                          {% endif %}
                         </div>
-                        <a href="#" class="add-to-cart">Add to Cart</a>
-                        <a href="#" class="add-to-cart compare">+ ADD to Compare</a>
+                        <div class="col-xl-6 col-lg-8 col-md-8 product-desc mt-md-50 sm-mt-50">
+                          <a href="#" class="add-to-wishlist"><i class="icon_heart_alt"></i></a>
+                          <div class="product-title">
+                            <small><a href="#">{{ product.category.title }}</a></small>
+                            <h4>
+                              <a href="#">{{ product.title }}</a>
+                            </h4>
+                          </div>
+                          <div class="product-rating">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-o"></i>
+                            <span>(5)</span>
+                          </div>
+                          <div class="product-text">{{ product.description|safe|truncatechars:500 }}</div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-4">
+                          <div class="product-action stuck text-left">
+                            <div class="free-delivery">
+                              <a href="#"><i class="ti-truck"></i> Free Delivery</a>
+                            </div>
+                            <div class="product-price-rating">
+                              <div>
+                                <del>{{ product.get_percentage }}</del>
+                              </div>
+                              <span>${{ product.price }}</span>
+                            </div>
+                            <div class="product-stock">
+                              <p>
+                                Avability:
+                                {% if product.in_stock == True %}
+                                  <span>In stock</span>
+                                </p>
+                              {% else %}
+                                <span>Not in stock</span>
+                              </p>
+                            {% endif %}
+                          </div>
+                          <a href="#" class="add-to-cart">Add to Cart</a>
+                          <a href="#" class="add-to-cart compare">+ ADD to Compare</a>
+                        </div>
                       </div>
                     </div>
                   </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="card">
+                <div class="card-body">
+                  <h3 class="text-center">Sorry no searched product found</h3>
+                  .
                 </div>
-              {% endfor %}
-            </div>
+              </div>
+            {% endif %}
           </div>
           {% include 'partials/_shop_pagianations.html' %}
         </div>

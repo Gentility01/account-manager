@@ -19,7 +19,6 @@ class TimeBasedModel(auto_prefetch.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta(auto_prefetch.Model.Meta):
-
         abstract = True
 
     objects = auto_prefetch.Manager()

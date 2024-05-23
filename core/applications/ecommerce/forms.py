@@ -1,26 +1,31 @@
+from ckeditor.widgets import CKEditorWidget
+from django.forms import CharField
 from django.forms import CheckboxInput
+from django.forms import ChoiceField
 from django.forms import FileInput
 from django.forms import ModelForm
 from django.forms import NumberInput
 from django.forms import Select
 from django.forms import Textarea
-from django.forms import CharField
 from django.forms import TextInput
 from multiupload.fields import MultiFileField
-
+from taggit.forms import TagField
 
 from core.applications.ecommerce.models import Category
 from core.applications.ecommerce.models import Product
-from core.applications.ecommerce.models import Tags
 from core.applications.ecommerce.models import ProductImages
-from ckeditor.widgets import CKEditorWidget
-from taggit.forms import TagField
+from core.applications.ecommerce.models import ProductReview
+from core.applications.ecommerce.models import Tags
+from core.utils.choices import Rating
 
 
 class ProductForm(ModelForm):
-    description = CharField(label='Description',
-                   widget=Textarea(attrs={'class': 'ckeditor'}))
+    description = CharField(
+        label="Description",
+        widget=Textarea(attrs={"class": "ckeditor"}),
+    )
     tags = TagField(required=False)
+
     class Meta:
         model = Product
         fields = [
@@ -39,7 +44,6 @@ class ProductForm(ModelForm):
             "best_seller",
             "special_offer",
             "just_arrived",
-
         ]
         widgets = {
             "title": TextInput(
@@ -87,9 +91,11 @@ class ProductForm(ModelForm):
             "just_arrived": CheckboxInput(),
         }
 
+
 class ProductImagesForm(ModelForm):
-    """ Form to get all product images """
-    image = MultiFileField(min_num=1, max_num=10, max_file_size=1024*1024*5)
+    """Form to get all product images"""
+
+    image = MultiFileField(min_num=1, max_num=10, max_file_size=1024 * 1024 * 5)
 
     class Meta:
         model = ProductImages
@@ -127,3 +133,17 @@ class TagsForm(ModelForm):
                 attrs={"class": "flex-grow", "placeholder": "Enter tag name"},
             ),
         }
+
+
+class ProductReviewForm(ModelForm):
+    review = CharField(
+        widget=Textarea(attrs={"placeholder": "Write your  review"}),
+    )
+    rating = ChoiceField(
+        choices=Rating.choices,
+        widget=Select(attrs={"class": "form-control"}),
+    )
+
+    class Meta:
+        model = ProductReview
+        fields = ["review", "rating"]

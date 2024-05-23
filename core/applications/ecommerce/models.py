@@ -1,4 +1,5 @@
 import auto_prefetch
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.contrib.auth.models import Permission
 from django.db.models import CASCADE
 from django.db.models import SET_NULL
@@ -6,10 +7,12 @@ from django.db.models import BooleanField
 from django.db.models import CharField
 from django.db.models import DecimalField
 from django.db.models import IntegerField
-from django.db.models import TextField
 from django.db.models import SlugField
+from django.db.models import TextField
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django_resized import ResizedImageField
+from taggit.managers import TaggableManager
 
 from core.utils.choices import ProductStatus
 from core.utils.choices import Rating
@@ -19,10 +22,6 @@ from core.utils.models import ImageBaseModels
 from core.utils.models import TimeBasedModel
 from core.utils.models import TitleandUIDTimeBasedModel
 from core.utils.models import TitleTimeBasedModel
-from django.utils.text import slugify
-
-from ckeditor_uploader.fields import RichTextUploadingField
-from taggit.managers import  TaggableManager
 
 # Create your models here.
 
@@ -68,10 +67,8 @@ class Category(TitleTimeBasedModel):
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
-
     def __str__(self):
         return self.title
-
 
 
 class Product(TitleandUIDTimeBasedModel, ImageBaseModels):
@@ -87,16 +84,11 @@ class Product(TitleandUIDTimeBasedModel, ImageBaseModels):
         on_delete=SET_NULL,
         null=True,
     )
-    description = RichTextUploadingField('Description', default="", null=True)
+    description = RichTextUploadingField("Description", default="", null=True)
     price = DecimalField(max_digits=100, decimal_places=2)
     oldprice = DecimalField(max_digits=100, decimal_places=2)
-    spacification = RichTextUploadingField('specification', default="", null=True )
-    tags = auto_prefetch.ForeignKey(
-        Tags,
-        verbose_name=_("Tag"),
-        on_delete=SET_NULL,
-        null=True,
-    )
+    spacification = RichTextUploadingField("specification", default="", null=True)
+
     product_status = CharField(
         choices=Status.choices,
         default=Status.IN_REVIEW,
@@ -192,7 +184,7 @@ class ProductReview(TimeBasedModel):
         null=True,
     )
     review = TextField()
-    rating = IntegerField(choices=Rating)
+    rating = IntegerField(choices=Rating.choices, default=Rating.THREE_STARS)
 
     class Meta:
         verbose_name_plural = "Product Reviews"

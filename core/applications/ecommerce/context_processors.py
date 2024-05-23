@@ -1,3 +1,6 @@
+from django.db.models import Max
+from django.db.models import Min
+
 from core.applications.ecommerce.models import Category
 from core.applications.ecommerce.models import Product
 
@@ -19,6 +22,8 @@ def product_list(request):
     just_arrived2 = products.filter(just_arrived=True).order_by("-id")
     categories = Category.objects.all().order_by("-id")
 
+    min_max_price = Product.objects.aggregate(Min("price"), Max("price"))
+
     return {
         "in_stock": in_stock,
         "best_seller": best_seller,
@@ -28,6 +33,7 @@ def product_list(request):
         "just_arrived": just_arrived,
         "just_arrived2": just_arrived2,
         "all_products": products,
+        "min_max_price": min_max_price,
     }
 
 

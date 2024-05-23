@@ -2,6 +2,8 @@ from allauth.account.utils import send_email_confirmation
 from allauth.account.views import SignupView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import ValidationError
+from django.db import DatabaseError
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -36,7 +38,7 @@ user_detail_view = UserDetailView.as_view()
 
 class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = User
-    fields = ["name"]
+    fields = ["name", "country", "phone_no", "email"]
     success_message = _("Information successfully updated")
 
     def get_success_url(self):
@@ -73,25 +75,22 @@ class ContentManagerAccount(SignupView):
     template_name = "account/content_manager.html"
 
     def form_valid(self, form):
-        user = form.save(self.request)  # Use form.save() to get the user instance
-        expertise_area = form.cleaned_data.get("expertise_area")
+        try:
+            user = form.save(self.request)
+            expertise_area = form.cleaned_data.get("expertise_area")
 
-        # Get or create the associated account for the user
-        account, created = Account.objects.get_or_create(owner=user)
+            account, created = Account.objects.get_or_create(owner=user)
+            ContentManager.objects.create(
+                user=user,
+                account=account,
+                expertise_area=expertise_area,
+            )
 
-        # Create the ContentManager instance with the associated account
-        ContentManager.objects.create(
-            user=user,
-            account=account,
-            expertise_area=expertise_area,
-        )
-
-        # Send email confirmation
-        send_email_confirmation(self.request, user)
-
-        return HttpResponseRedirect(
-            "/accounts/confirm-email/",
-        )  # Redirect after successful signup
+            send_email_confirmation(self.request, user)
+            return HttpResponseRedirect("/accounts/confirm-email/")
+        except (DatabaseError, ValidationError) as e:
+            form.add_error(None, f"An error occurred: {e!s}")
+            return self.form_invalid(form)
 
 
 content_manager_account = ContentManagerAccount.as_view()
@@ -102,25 +101,22 @@ class AccountantAccount(SignupView):
     template_name = "account/accountant_signup.html"
 
     def form_valid(self, form):
-        user = form.save(self.request)  # Use form.save() to get the user instance
-        financial_software_used = form.cleaned_data.get("financial_software_used")
+        try:
+            user = form.save(self.request)
+            financial_software_used = form.cleaned_data.get("financial_software_used")
 
-        # Get or create the associated account for the user
-        account, created = Account.objects.get_or_create(owner=user)
+            account, created = Account.objects.get_or_create(owner=user)
+            Accountant.objects.create(
+                user=user,
+                account=account,
+                financial_software_used=financial_software_used,
+            )
 
-        # Create the Accountant instance with the associated account
-        Accountant.objects.create(
-            user=user,
-            account=account,
-            financial_software_used=financial_software_used,
-        )
-
-        # Send email confirmation
-        send_email_confirmation(self.request, user)
-
-        return HttpResponseRedirect(
-            "/accounts/confirm-email/",
-        )  # Redirect after successful signup
+            send_email_confirmation(self.request, user)
+            return HttpResponseRedirect("/accounts/confirm-email/")
+        except (DatabaseError, ValidationError) as e:
+            form.add_error(None, f"An error occurred: {e!s}")
+            return self.form_invalid(form)
 
 
 accountant_account = AccountantAccount.as_view()

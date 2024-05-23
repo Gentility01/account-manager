@@ -84,8 +84,6 @@
               <li>
                 <div class="body-title">Image</div>
               </li>
-
-
             </ul>
             <ul class="flex flex-column">
               {% for product in page_obj %}
@@ -97,17 +95,16 @@
                     <div class="name">
                       <a href="" class="body-title-2">{{ product.product.title|truncatechars:20 }}</a>
                     </div>
-
-
-
                     <div class="list-icon-function">
                       <a href="" class="item eye">
                         <i class="icon-eye"></i>
                       </a>
-                      <a href="{% url 'ecommerce:update_product_image' product.pk %}" class="item edit">
+                      <a href="{% url 'ecommerce:update_product_image' product.pk %}"
+                         class="item edit">
                         <i class="icon-edit-3"></i>
                       </a>
-                      <a href="{% url 'ecommerce:delete_product_image' product.pk %}" class="item trash">
+                      <a href="{% url 'ecommerce:delete_product_image' product.pk %}"
+                         class="item trash">
                         <i class="icon-trash-2"></i>
                       </a>
                     </div>
