@@ -117,17 +117,47 @@
             <div class="icon">
               <i class="icon-box"></i>
             </div>
-            <div class="text">Attributes</div>
+            <div class="text">Blogs</div>
           </a>
           <ul class="sub-menu">
             <li class="sub-menu-item">
-              <a href="attributes.html" class="">
-                <div class="text">Attributes</div>
+              <a href="{% url 'blog:blog_list' %}" class="">
+                <div class="text">Blog lists</div>
               </a>
             </li>
             <li class="sub-menu-item">
-              <a href="add-attributes.html" class="">
-                <div class="text">Add attributes</div>
+              <a href="{% url 'blog:category_list' %}" class="">
+                <div class="text">Categories</div>
+              </a>
+            </li>
+            <li class="sub-menu-item">
+              <a href="{% url 'blog:create_post' %}" class="">
+                <div class="text">Add Post</div>
+              </a>
+            </li>
+            <li class="sub-menu-item">
+              <a href="{% url 'blog:create_category' %}" class="">
+                <div class="text">Add category</div>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="menu-item has-children">
+          <a href="javascript:void(0);" class="menu-item-button">
+            <div class="icon">
+              <i class="icon-image"></i>
+            </div>
+            <div class="text">Banner</div>
+          </a>
+          <ul class="sub-menu">
+            <li class="sub-menu-item">
+              <a href="{% url 'blog:banner_create' %}" class="">
+                <div class="text">Add Banner</div>
+              </a>
+            </li>
+            <li class="sub-menu-item">
+              <a href="{% url 'blog:list_banner' %}" class="">
+                <div class="text">Banner Lists</div>
               </a>
             </li>
           </ul>

@@ -11,14 +11,12 @@ from django.db.models import SlugField
 from django.db.models import TextField
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from django_resized import ResizedImageField
 from taggit.managers import TaggableManager
 
 from core.utils.choices import ProductStatus
 from core.utils.choices import Rating
 from core.utils.choices import Status
-from core.utils.media import MediaHelper
-from core.utils.models import ImageBaseModels
+from core.utils.models import ImageTitleTimeBaseModels
 from core.utils.models import TimeBasedModel
 from core.utils.models import TitleandUIDTimeBasedModel
 from core.utils.models import TitleTimeBasedModel
@@ -38,9 +36,8 @@ class Permissions:
 class Tags(TitleTimeBasedModel): ...
 
 
-class Category(TitleTimeBasedModel):
+class Category(ImageTitleTimeBaseModels):
     slug = SlugField(default="", blank=True)
-    image = ResizedImageField(upload_to=MediaHelper.get_image_upload_path)
     sub_category = auto_prefetch.ForeignKey(
         "self",
         on_delete=CASCADE,
@@ -71,7 +68,7 @@ class Category(TitleTimeBasedModel):
         return self.title
 
 
-class Product(TitleandUIDTimeBasedModel, ImageBaseModels):
+class Product(TitleandUIDTimeBasedModel, ImageTitleTimeBaseModels):
     user = auto_prefetch.ForeignKey(
         "users.User",
         verbose_name=_("User"),
@@ -121,7 +118,7 @@ class Product(TitleandUIDTimeBasedModel, ImageBaseModels):
         return self.title
 
 
-class ProductImages(ImageBaseModels, TimeBasedModel):
+class ProductImages(ImageTitleTimeBaseModels):
     product = auto_prefetch.ForeignKey(
         Product,
         verbose_name=_("Product image"),

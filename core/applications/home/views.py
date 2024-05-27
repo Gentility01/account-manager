@@ -127,6 +127,10 @@ class ProductsCategoryList(ListView):
         )  # Set page_obj
         return context
 
+    # Add filter functionality
+    def post(self, request, *args, **kwargs):
+        return ProductFilterView.as_view()(request, *args, **kwargs)
+
 
 class ProductTagsList(ListView):
     model = Product
@@ -139,6 +143,10 @@ class ProductTagsList(ListView):
         tag_slug = self.kwargs["tag_slug"]
         return Product.objects.filter(tags__slug=tag_slug).order_by("created_at")
 
+    # Add filter functionality
+    def post(self, request, *args, **kwargs):
+        return ProductFilterView.as_view()(request, *args, **kwargs)
+
 
 class ProductSearchView(ListView):
     model = Product
@@ -150,7 +158,6 @@ class ProductSearchView(ListView):
         query = self.request.GET.get("q")
         return Product.objects.filter(
             title__icontains=query,
-            description__icontains=query,
         )
 
     def get_context_data(self, **kwargs):
@@ -160,6 +167,10 @@ class ProductSearchView(ListView):
             context["page_obj"].number,
         )  # Set page_obj
         return context
+
+    # Add filter functionality
+    def post(self, request, *args, **kwargs):
+        return ProductFilterView.as_view()(request, *args, **kwargs)
 
 
 class ProductFilterView(View):

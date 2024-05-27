@@ -1056,7 +1056,7 @@ h1, h2, h3, h4, h5, h6 {
 /*----------------------------------------*/
 /*  5.2 Slider BG
 /*----------------------------------------*/
-.slider-single.bg-1 {
+/* .slider-single.bg-1 {
 	background-image:url(assets/images/sliders/1.jpg);
 }
 .slider-single.bg-2 {
@@ -1081,6 +1081,18 @@ h1, h2, h3, h4, h5, h6 {
 .slider-single.bg-7 {
 	background-image:url(assets/images/sliders/6.jpg);
 	height:630px;
+} */
+.slider-single {
+    height: 515px; /* Maintain the height */
+    background-size: cover;
+    background-position: center;
+}
+
+/* Remove hardcoded background images */
+.slider-single.bg-1,
+.slider-single.bg-2,
+.slider-single.bg-3 {
+    background-image: none;
 }
 /*----------------------------------------*/
 /*  5.2 Banner

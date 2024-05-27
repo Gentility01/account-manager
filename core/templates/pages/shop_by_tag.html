@@ -57,7 +57,7 @@
                           </div>
                           <div class="product-price-rating">
                             <div class="pull-left">
-                              <span>${{ product.price }}</span>
+                              <span>$</span><span id="product-price-{{ product.id }}">{{ product.price }}</span>
                             </div>
                             <div class="pull-right">
                               <i class="fa fa-star-o"></i>
@@ -69,8 +69,24 @@
                             </div>
                           </div>
                           <div class="product-action">
-                            <a href="javascript:void(0);" class="product-compare"><i class="ti-control-shuffle"></i></a>
-                            <a href="javascript:void(0);" class="add-to-cart">Add to Cart</a>
+                            {% comment %} <a href="javascript:void(0);" class="product-compare"><i class="ti-control-shuffle"></i></a> {% endcomment %}
+                            <input type="hidden"
+                                   value="1"
+                                   id="product-quantity"
+                                   class="product-quantity-{{ product.id }}" />
+                            <input type="hidden"
+                                   class="product-pid-{{ product.id }}"
+                                   value="{{ product.id }}" />
+                            <input type="hidden"
+                                   class="product-image-{{ product.id }}"
+                                   value="{{ product.image.url }}" />
+                            <input type="hidden"
+                                   class="product-title-{{ product.id }}"
+                                   value="{{ product.title }}" />
+                            <a href="javascript:void(0);"
+                               class="add-to-cart add-to-cart-btn"
+                               id="add-to-cart-btn"
+                               data-index="{{ product.id }}">Add to Cart</a>
                             <a href="javascript:void(0);" class="product-wishlist"><i class="ti-heart"></i></a>
                           </div>
                         </div>

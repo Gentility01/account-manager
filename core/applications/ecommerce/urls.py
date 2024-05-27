@@ -66,4 +66,11 @@ urlpatterns = [
         views.AddReviewsView.as_view(),
         name="add_review",
     ),
+    path("add-to-cart/", views.AddToCartView.as_view(), name="add_to_cart"),
+    path("cart", views.CartListView.as_view(), name="cart_list"),
+    path(
+        "delete-from-cart",
+        views.DeleteFromCartView.as_view(),
+        name="delete_from_cart_list",
+    ),
 ]

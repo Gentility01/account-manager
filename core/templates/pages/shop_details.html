@@ -87,7 +87,7 @@
                       <div>
                       <del {{ object.oldprice }}</del>
                     </div>
-                    <span>${{ object.price }}</span>
+                    <span>$</span><span id="product-price-{{ product.id }}">{{ object.price }}</span>
                     <div class="pull-right">
                       <i class="fa fa-star"></i>
                       <i class="fa fa-star"></i>
@@ -96,20 +96,31 @@
                       <i class="fa fa-star-o"></i>
                     </div>
                   </div>
-                  <div class="product-colors mt-20">
+                  {% comment %} <div class="product-colors mt-20">
                     <label>Select Color:</label>
                     <ul class="list-none">
                       <li>Red</li>
                       <li>Black</li>
                       <li>Blue</li>
                     </ul>
-                  </div>
+                  </div> {% endcomment %}
                   <div class="product-quantity mt-15">
                     <label>Quatity:</label>
-                    <input type="number" value="1" />
+                    <input type="number" value="1" class="product-quantity-{{ object.id }}" />
                   </div>
                   <div class="add-to-get mt-50">
-                    <a href="#" class="add-to-cart">Add to Cart</a>
+                    <input type="hidden"
+                           class="product-pid-{{ object.id }}"
+                           value="{{ object.id }}" />
+                    <input type="hidden"
+                           class="product-image-{{ object.id }}"
+                           value="{{ object.image.url }}" />
+                    <input type="hidden"
+                           class="product-title-{{ object.id }}"
+                           value="{{ product.title }}" />
+                    <a class="add-to-cart add-to-cart-btn"
+                       id="add-to-cart-btn"
+                       data-index="{{ object.id }}">Add to Cart</a>
                     <a href="#" class="add-to-cart compare">+ ADD to Compare</a>
                   </div>
                   <div class="product-features mt-50">
@@ -251,7 +262,8 @@
                 </div>
               </div>
               <div class="product-action">
-                <a href="javascript:void(0);" class="product-compare"><i class="ti-control-shuffle"></i></a>
+                {% comment %} <a href="javascript:void(0);" class="product-compare"><i class="ti-control-shuffle"></i></a>
+                {% endcomment %}
                 <a href="javascript:void(0);" class="add-to-cart">Add to Cart</a>
                 <a href="javascript:void(0);" class="product-wishlist"><i class="ti-heart"></i></a>
               </div>

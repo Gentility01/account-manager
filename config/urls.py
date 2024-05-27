@@ -16,6 +16,7 @@ urlpatterns = [
     path(
         "ecommerce/", include("core.applications.ecommerce.urls", namespace="ecommerce")
     ),
+    path("blog/", include("core.applications.blog.urls", namespace="blog")),
     path("accounts/", include("allauth.urls")),
     # ckeditor
     path("ckeditor/", include("ckeditor_uploader.urls")),

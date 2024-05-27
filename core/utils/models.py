@@ -68,7 +68,7 @@ class BaseModel(UIDTimeBasedModel):
         abstract = True
 
 
-class ImageBaseModels(UIDTimeBasedModel):
+class ImageTitleTimeBaseModels(TitleTimeBasedModel):
     image = ResizedImageField(upload_to=MediaHelper.get_image_upload_path)
 
     class Meta(auto_prefetch.Model.Meta):

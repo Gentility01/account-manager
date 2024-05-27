@@ -1,6 +1,9 @@
 from django.db.models import Max
 from django.db.models import Min
 
+from core.applications.blog.models import Banner
+from core.applications.blog.models import BlogCategory
+from core.applications.blog.models import Post
 from core.applications.ecommerce.models import Category
 from core.applications.ecommerce.models import Product
 
@@ -13,6 +16,8 @@ def product_list(request):
     :return: Dictionary containing the product list
     """
     products = Product.objects.all().order_by("-created_at", "-updated_at")
+    blog_categories = BlogCategory.objects.all().order_by("-created_at")
+    blog_posts = Post.objects.all().order_by("-created_at")
     in_stock = products.filter(in_stock=True)
 
     best_seller = products.filter(best_seller=True)
@@ -24,6 +29,8 @@ def product_list(request):
 
     min_max_price = Product.objects.aggregate(Min("price"), Max("price"))
 
+    banners = Banner.objects.all().order_by("-created_at")
+
     return {
         "in_stock": in_stock,
         "best_seller": best_seller,
@@ -34,6 +41,9 @@ def product_list(request):
         "just_arrived2": just_arrived2,
         "all_products": products,
         "min_max_price": min_max_price,
+        "blog_categories": blog_categories,
+        "blog_posts": blog_posts,
+        "banners": banners,
     }
 
 

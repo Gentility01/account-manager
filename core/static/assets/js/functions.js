@@ -157,4 +157,99 @@ $(document).ready(function() {
             return false; // Prevent further execution
         }
     });
+
+
+
+    // ----------------------------- Add to cart
+
+    $(".add-to-cart-btn").on("click", function(){
+        let this_val = $(this)
+        let index = this_val.attr("data-index")
+
+        let quantity = $(".product-quantity-" + index).val()
+        let product_title =  $(".product-title-" + index).val()
+
+        let product_id =  $(".product-pid-" + index).val()
+        let product_price = $("#product-price-" + index).text()
+
+        let product_image = $(".product-image-" + index).val()
+
+
+        console.log("Quantity", quantity)
+        console.log("Product id", product_id)
+        console.log("product price",product_price)
+        console.log("product titile",product_title)
+        console.log("current element",this_val)
+        console.log("current index",index)
+        console.log("product image",product_image)
+
+        $.ajax({
+            url:"/ecommerce/add-to-cart",
+            data:{
+                "id":product_id,
+                "qty":quantity,
+                "image":product_image,
+                "title":product_title,
+                "price":product_price
+            },
+            dataType:"json",
+            beforeSend: function() {
+                this_val.html("Adding product to cart")
+                console.log("Adding product to cart")
+            },
+            success: function(response) {
+                console.log("Success")
+                console.log(response)
+                this_val.html("Added 👍")
+                console.log("Added product to cart")
+                $(".cart-item-count").text(response.totalcartitems)
+                console.log("Updated cart item count:", response.totalcartitems)
+            }
+
+
+
+
+        })
+    });
+
+
+
+    // ----------------------------- delete product from cart list
+
+    $(document).ready(function() {
+        function attachDeleteHandlers() {
+            $(".delete-product").off("click").on("click", function(e) {
+                e.preventDefault(); // Prevent the default action
+
+                let product_id = $(this).data("product");
+                let this_value = $(this);
+
+                console.log("product id ", product_id);
+                console.log("this val ", this_value);
+
+                $.ajax({
+                    url: "/ecommerce/delete-from-cart", // Ensure this URL matches your Django URL pattern
+                    data: {
+                        "id": product_id
+                    },
+                    dataType: "json",
+                    beforeSend: function() {
+                        this_value.hide(); // Hide the delete button before sending the request
+                    },
+                    success: function(response) {
+                        $(".cart-item-count").text(response.totalcartitems); // Update the cart item count
+                        $("#cart-list").html(response.data); // Update the cart list with new data
+                        attachDeleteHandlers(); // Re-attach handlers to the new elements
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error deleting item from cart:', error);
+                        this_value.show(); // Show the delete button again in case of an error
+                    }
+                });
+            });
+        }
+
+        attachDeleteHandlers(); // Initial attachment of event handlers
+    });
+
 });
