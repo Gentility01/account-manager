@@ -6,6 +6,7 @@ from core.applications.ecommerce.models import CartOrderItems
 from core.applications.ecommerce.models import Category
 from core.applications.ecommerce.models import Product
 from core.applications.ecommerce.models import ProductImages
+from core.applications.ecommerce.models import ProductItem
 from core.applications.ecommerce.models import ProductReview
 from core.applications.ecommerce.models import Tags
 from core.applications.ecommerce.models import WishList
@@ -20,9 +21,14 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ["id"]
 
 
+class ProductItemInline(admin.TabularInline):
+    model = ProductItem
+    extra = 1  # Number of extra forms to display
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ProductImagesAdmin]
+    inlines = [ProductImagesAdmin, ProductItemInline]
     list_display = [
         "user",
         "title",

@@ -1,7 +1,8 @@
 import auto_prefetch
+import cloudinary.uploader
+from cloudinary.models import CloudinaryField
 from django.db import models
 from django.db.models.query import QuerySet
-from django_resized import ResizedImageField
 from model_utils import FieldTracker
 
 from core.utils.media import MediaHelper
@@ -69,7 +70,15 @@ class BaseModel(UIDTimeBasedModel):
 
 
 class ImageTitleTimeBaseModels(TitleTimeBasedModel):
-    image = ResizedImageField(upload_to=MediaHelper.get_image_upload_path)
+    # image = ResizedImageField(upload_to=MediaHelper.get_image_upload_path)
+    image = CloudinaryField("image", default="", blank=True)
 
     class Meta(auto_prefetch.Model.Meta):
         abstract = True
+
+    def save(self, *args, **kwargs):
+        if self.image and not str(self.image).startswith("http"):
+            upload_path = MediaHelper.get_image_upload_path(self, self.image.name)
+            upload_result = cloudinary.uploader.upload(self.image, folder=upload_path)
+            self.image = upload_result["public_id"]
+        super(ImageTitleTimeBaseModels, self).save(*args, **kwargs)

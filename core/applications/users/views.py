@@ -17,6 +17,8 @@ from core.applications.users.models import Account
 from core.applications.users.models import Accountant
 from core.applications.users.models import Administrator
 from core.applications.users.models import ContentManager
+from core.applications.users.models import Customer
+from core.applications.users.models import CustomerSupportRepresentative
 from core.applications.users.models import User
 
 
@@ -40,6 +42,7 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = User
     fields = ["name", "country", "phone_no", "email"]
     success_message = _("Information successfully updated")
+    template_name = "account/user_detail.html"
 
     def get_success_url(self):
         # for mypy to know that the user is authenticated
@@ -145,3 +148,52 @@ class AdministratorAccount(SignupView):
 
 
 administrator_account = AdministratorAccount.as_view()
+
+
+class CustomerSupportRepresentativeAccount(SignupView):
+    form_class = CustomSignupForm
+    template_name = "account/customer_reps.html"
+
+    def form_valid(self, form):
+        try:
+            user = form.save(self.request)
+            department = form.cleaned_data.get("department")
+
+            account, created = Account.objects.get_or_create(owner=user)
+            CustomerSupportRepresentative.objects.create(
+                user=user,
+                account=account,
+                department=department,
+            )
+
+            send_email_confirmation(self.request, user)
+            return HttpResponseRedirect("/accounts/confirm-email/")
+        except (DatabaseError, ValidationError) as e:
+            form.add_error(None, f"An error occurred: {e!s}")
+            return self.form_invalid(form)
+
+
+customer_support_reps = CustomerSupportRepresentativeAccount.as_view()
+
+
+class CustomerAccount(SignupView):
+    form_class = CustomSignupForm
+    template_name = "account/customer_account.html"
+
+    def form_valid(self, form):
+        try:
+            user = form.save(self.request)
+            account, created = Account.objects.get_or_create(owner=user)
+            Customer.objects.create(
+                user=user,
+                account=account,
+            )
+
+            send_email_confirmation(self.request, user)
+            return HttpResponseRedirect("/accounts/confirm-email/")
+        except (DatabaseError, ValidationError) as e:
+            form.add_error(None, f"An error occurred: {e!s}")
+            return self.form_invalid(form)
+
+
+customers_account = CustomerAccount.as_view()

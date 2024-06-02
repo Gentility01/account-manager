@@ -2,6 +2,7 @@ import auto_prefetch
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.db.models import CASCADE
 from django.db.models import SET_NULL
+from django.db.models import BooleanField
 from django.db.models import CharField
 from django.db.models import DecimalField
 from django.db.models import SlugField
@@ -10,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from taggit.managers import TaggableManager
 
 from core.utils.models import ImageTitleTimeBaseModels
+from core.utils.models import TitleTimeBasedModel
 
 # Create your models here.
 
@@ -60,7 +62,7 @@ class Post(ImageTitleTimeBaseModels):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return "/blog/%s/" % self.slug
+        return self.slug
 
     def __str__(self):
         return self.title
@@ -74,7 +76,7 @@ class Banner(ImageTitleTimeBaseModels):
         null=True,
     )
     slug = SlugField(default="", blank=True)
-    sub_title = CharField(max_length=50, default="", null=True)
+    sub_title = CharField(max_length=50, default="", blank=True)
     price = DecimalField(max_digits=100, decimal_places=2)
     oldprice = DecimalField(max_digits=100, decimal_places=2)
 
@@ -82,3 +84,15 @@ class Banner(ImageTitleTimeBaseModels):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+
+class Announcement(TitleTimeBasedModel):
+    content = RichTextUploadingField("Description", default="", null=True)
+    active = BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Announcement"
+        verbose_name_plural = "Announcements"
+
+    def __str__(self):
+        return self.title

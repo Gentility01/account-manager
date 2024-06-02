@@ -3,6 +3,9 @@
 
 from pathlib import Path
 
+import cloudinary
+import cloudinary.api
+import cloudinary.uploader
 import environ
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
@@ -81,6 +84,7 @@ THIRD_PARTY_APPS = [
     "ckeditor",
     "django_countries",
     "taggit",
+    "cloudinary",
 ]
 
 LOCAL_APPS = [
@@ -88,6 +92,7 @@ LOCAL_APPS = [
     "core.applications.home",
     "core.applications.ecommerce",
     "core.applications.blog",
+    "core.applications.supports",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -310,3 +315,12 @@ CKEDITOR_CONFIGS = {
         ),
     },
 }
+
+
+# cloudinary
+cloudinary.config(
+    cloud_name=env("CLOUDINARY_CLOUD_NAME"),
+    api_key=env("CLOUDINARY_API_KEY"),
+    api_secret=env("CLOUDINARY_API_SECRET"),
+    secure=True,
+)

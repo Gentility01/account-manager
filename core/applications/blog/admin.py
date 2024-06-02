@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from core.applications.blog.models import Announcement
 from core.applications.blog.models import Banner
 from core.applications.blog.models import BlogCategory
 from core.applications.blog.models import Post
@@ -28,3 +29,10 @@ class PostAdmin(admin.ModelAdmin):
 @admin.register(Banner)
 class BannerAdmin(admin.ModelAdmin):
     list_display = ["title", "slug", "sub_title", "category", "price", "oldprice"]
+
+
+@admin.register(Announcement)
+class AnnouncementAdmin(admin.ModelAdmin):
+    list_display = ("title", "created_at", "active")
+    list_filter = ("active", "created_at")
+    search_fields = ("title", "content")

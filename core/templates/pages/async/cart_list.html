@@ -69,9 +69,9 @@
                   </td>
                   <td>
                     <div class="cart-quantity-changer">
-                      <a class="value-decrease qtybutton">-</a>
+                      {% comment %} <a class="value-decrease qtybutton">-</a> {% endcomment %}
                       <input type="text" value="{{ item.quantity }}" />
-                      <a class="value-increase qtybutton">+</a>
+                      {% comment %} <a class="value-increase qtybutton">+</a> {% endcomment %}
                     </div>
                   </td>
                   <td>
@@ -86,7 +86,7 @@
                   </td>
                   <td>
                     <div class="product-remove">
-                      <a href="#">
+                      <a class="update-product" data-product="{{ product_id }}">
                         <i class="fa fa-refresh" aria-hidden="true"></i>
                       </a>
                     </div>

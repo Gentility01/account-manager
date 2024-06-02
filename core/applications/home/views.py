@@ -10,6 +10,7 @@ from django.views.generic import ListView
 from django.views.generic import TemplateView
 from django.views.generic import View
 
+from core.applications.blog.models import Announcement
 from core.applications.ecommerce.forms import ProductReviewForm
 from core.applications.ecommerce.models import Category
 from core.applications.ecommerce.models import Product
@@ -21,6 +22,13 @@ from core.applications.ecommerce.models import ProductReview
 
 class HomeView(TemplateView):
     template_name = "pages/home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["announcements"] = Announcement.objects.filter(active=True).order_by(
+            "-created_at",
+        )
+        return context
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):

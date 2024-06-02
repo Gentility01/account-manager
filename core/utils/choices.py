@@ -22,3 +22,9 @@ class Rating(IntegerChoices):
     THREE_STARS = 3, "⭐⭐⭐"
     FOUR_STARS = 4, "⭐⭐⭐⭐"
     FIVE_STARS = 5, "⭐⭐⭐⭐⭐"
+
+
+class Ticket(TextChoices):
+    OPEN = ("OPEN", "OPEN")
+    IN_PROGRESS = ("IN_PROGRESS", "IN_PROGRESS")
+    CLOSED = ("CLOSED", "CLOSED")

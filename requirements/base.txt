@@ -30,3 +30,5 @@ django-ckeditor==6.7.1
 django-countries==7.6.1
 
 django-taggit==5.0.1
+
+cloudinary==1.40.0  #https://cloudinary.com/documentation/django_image_and_video_upload#django_forms_and_models

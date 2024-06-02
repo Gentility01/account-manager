@@ -243,7 +243,7 @@
                   <img src="{{ product.image.url }}" alt="" />
                 </a>
                 <div class="downsale">
-                  <span>-</span>${{ product.get_percentage }}
+                  <span>-</span>${{ product.get_discount_price }}
                 </div>
                 <div class="product-quick-view">
                   <a href="{% url 'homeapp:product_detail' product.pk %}">quick view</a>

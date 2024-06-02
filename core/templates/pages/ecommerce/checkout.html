@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block main %}
+{% block content %}
+{% include 'partials/_messages.html' %}
+{% include 'partials/_sidebar.html' %}
+
+<div class="shopping-cart-steps">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="cart-steps">
+          <ul class="clearfix">
+            <li class="active">
+              <div class="inner">
+                <span class="step">01</span> <span class="inner-step">Shopping Cart</span>
+              </div>
+            </li>
+            <li>
+              <div class="inner">
+                <span class="step">02</span> <span class="inner-step">Checkout </span>
+              </div>
+            </li>
+            <li>
+              <div class="inner">
+                <span class="step">03</span> <span class="inner-step">Order Completed </span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--checkout-area start-->
+<div class="checkout-area mt-15">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <p>Returning customer? <a href="#">Click here</a> to login</p>
+      </div>
+    </div>
+    <div class="row mt-10">
+      <div class="col-lg-8">
+        <div class="billing-form">
+          <h4>Billing Address</h4>
+          <form action="#">
+            <div class="row">
+              <div class="col-lg-3 align-items-center">
+                <label>COUNTRY *</label>
+              </div>
+              <div class="col-lg-9">
+                <select>
+                  <option>Bangladesh</option>
+                  <option>India</option>
+                  <option>United States</option>
+                  <option>Australia</option>
+                  <option>Brazil</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3">
+                <label>FIRST NAME *</label>
+              </div>
+              <div class="col-lg-9">
+                <input type="text" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3">
+                <label>LAST NAME *</label>
+              </div>
+              <div class="col-lg-9">
+                <input type="text" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3">
+                <label>COMPANY NAME</label>
+              </div>
+              <div class="col-lg-9">
+                <input type="text" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3">
+                <label>ADDRESS *</label>
+              </div>
+              <div class="col-lg-9">
+                <input type="text" placeholder="Street Address" />
+                <input type="text" placeholder="Apartment, suite, unite ect (optinal)" class="mt-sm-30" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3">
+                <label>TOWN / CITY *</label>
+              </div>
+              <div class="col-lg-9">
+                <input type="text" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3">
+                <label>COUNTRY / STATES</label>
+              </div>
+              <div class="col-lg-9">
+                <input type="text" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3">
+                <label>POSTCODE / ZIP *</label>
+              </div>
+              <div class="col-lg-9">
+                <input type="text" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3">
+                <label>EMAIL ADDRESS *</label>
+              </div>
+              <div class="col-lg-9">
+                <input type="text" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3">
+                <label>PHONE *</label>
+              </div>
+              <div class="col-lg-9">
+                <input type="text" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <p>Create an account by entering the information below. If you are a returning customer please login
+                  at the top of the page</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3">
+                <label>ACCOUNT PASSWORD *</label>
+              </div>
+              <div class="col-lg-9">
+                <input type="text" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3">
+                <label class="p-0">ORDER NOTES</label>
+              </div>
+              <div class="col-lg-9">
+                <input type="text" class="p-0" />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="sidebar-checkout">
+          <div class="cart-box cart-coupon fix">
+            <h5>Promotrional Code</h5>
+            <div class="cart-box-inner">
+              <p>Enter your coupin if you have one</p>
+              <input type="text" />
+              <a href="#" class="btn-common">Apply</a>
+            </div>
+          </div>
+        </div>
+        <div class="order-details mt-30">
+          <h4>Your Order</h4>
+          <div class="order-details-inner">
+            <table>
+              <thead>
+                <tr>
+                  <th>PRODUCT</th>
+                  <th>TOTAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for product_id, item in cart_data.items %}
+                <tr>
+                  <td><img height="35" src="{{ item.image }}" alt="" />{{ item.title|truncatechars:15}}</td>
+                  <td><strong>${% widthratio item.price 1 item.quantity %}</strong></td>
+                </tr>
+                {% endfor %}
+                {% comment %} <td>ORDER TOTAL</td>
+                <td><strong>$460.00</strong></td> {% endcomment %}
+                </tr>
+              </tbody>
+            </table>
+            <div class="payment-gateways mt-30">
+              <div class="single-payment-gateway">
+                <input type="checkbox" id="system1" />
+                <label for="system1">Create an account?</label>
+                <div class="payment-gateway-desc">
+                  <p>Lorem ipsum dolor sit amet, consectetur adip elit, sed do eiusmod tempor incididunt ut labore et
+                    dolore magna aliqua.</p>
+                </div>
+              </div>
+              <div class="single-payment-gateway">
+                <input type="radio" id="system2" />
+                <label for="system2">Cheque Payment</label>
+              </div>
+              <div class="single-payment-gateway">
+                <input type="radio" id="system3" />
+                <label for="system3">Paypal</label>
+              </div>
+            </div>
+            <div class="place-order text-center mt-60">
+              <a href="#" class="btn-common width-180">place porder</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--checkout-area end-->
+
+<!--brands-area start-->
+<div class="container mt-20">
+  <div class="brands-area br-none">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="brand-items">
+          <div class="brand-item">
+            <a href="#">
+              <img class="brand-static" src="assets/images/brands/1.jpg" alt="" />
+            </a>
+          </div>
+          <div class="brand-item">
+            <a href="#">
+              <img class="brand-static" src="assets/images/brands/2.jpg" alt="" />
+            </a>
+          </div>
+          <div class="brand-item">
+            <a href="#">
+              <img class="brand-static" src="assets/images/brands/3.jpg" alt="" />
+            </a>
+          </div>
+          <div class="brand-item">
+            <a href="#">
+              <img class="brand-static" src="assets/images/brands/4.jpg" alt="" />
+            </a>
+          </div>
+          <div class="brand-item">
+            <a href="#">
+              <img class="brand-static" src="assets/images/brands/5.jpg" alt="" />
+            </a>
+          </div>
+          <div class="brand-item">
+            <a href="#">
+              <img class="brand-static" src="assets/images/brands/6.jpg" alt="" />
+            </a>
+          </div>
+          <div class="brand-item">
+            <a href="#">
+              <img class="brand-static" src="assets/images/brands/7.jpg" alt="" />
+            </a>
+          </div>
+          <div class="brand-item">
+            <a href="#">
+              <img class="brand-static" src="assets/images/brands/8.jpg" alt="" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--brands-area end-->
+{% endblock content %}
+{% endblock main %}

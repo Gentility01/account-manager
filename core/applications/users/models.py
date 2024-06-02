@@ -45,6 +45,18 @@ class User(UIDTimeBasedModel, AbstractUser):
     def __str__(self) -> str:
         return self.email
 
+    @property
+    def is_customer_support_representative(self):
+        return CustomerSupportRepresentative.objects.filter(user=self).exists()
+
+    @property
+    def is_content_manager(self):
+        return ContentManager.objects.filter(user=self).exists()
+
+    @property
+    def is_customer(self):
+        return Customer.objects.filter(user=self).exists()
+
 
 class Account(UIDTimeBasedModel):
     owner = auto_prefetch.ForeignKey(
@@ -80,6 +92,15 @@ class BaseProfile(UIDTimeBasedModel):
         abstract = True
 
 
+class Customer(BaseProfile):
+    """
+    represent a customer
+    """
+
+    def __str__(self):
+        return self.user.name
+
+
 class Administrator(BaseProfile):
     """
     Represents an administrator associated with an account.
@@ -100,6 +121,16 @@ class CustomerSupportRepresentative(BaseProfile):
 
     class Meta(BaseProfile.Meta):
         verbose_name_plural = "Customer Support Representatives"
+
+    def save(self, *args, **kwargs):
+        if not self.department:
+            self.department = (
+                "General"  # Set default value if department is not provided
+            )
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.user.name
 
 
 class ContentManager(BaseProfile):

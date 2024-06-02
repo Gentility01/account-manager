@@ -24,6 +24,7 @@ from core.applications.ecommerce.models import Product
 from core.applications.ecommerce.models import ProductImages
 from core.applications.ecommerce.models import ProductReview
 from core.applications.ecommerce.models import Tags
+from core.applications.ecommerce.models import WishList
 from core.utils.views import ContentManagerRequiredMixin
 
 
@@ -320,10 +321,6 @@ class AddToCartView(View):
 # ---------------------- Add to cart  ends here ----------------
 
 
-# class CartListView(View):
-#     return render(request, self.template_name)
-
-
 class CartListView(TemplateView):
     """
     A view that displays the cart items and calculates the total amount.
@@ -376,37 +373,12 @@ class CartListView(TemplateView):
         return context
 
 
+# ---------------------------  ----------------------------------
+# ---------------------- Cart List  ends here ----------------
+
+
 class DeleteFromCartView(View):
     def get(self, request, *args, **kwargs):
-        """
-        Removes an item from the cart and returns a JSON response
-        with the updated cart data
-        and total number of items in the cart.
-
-        Parameters:
-            request (HttpRequest): The HTTP request object.
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
-
-        Returns:
-            JsonResponse: A JSON response containing the updated cart data
-            and the total number of items in the cart.
-
-        Description:
-            This function removes an item from the cart based on the provided
-            product ID. It first retrieves the product ID from the request GET
-            parameters.
-            Then, it calls the `remove_item_from_cart` method to remove the item
-              from the cart.
-            After that, it calculates the total amount of the cart using the
-            `calculate_cart_total`
-            method. Finally, it renders the "pages/ecommerce/async/cart_list.html"
-            template with the updated cart data and the total number of items in
-            the cart.
-            The function returns a JSON response containing the rendered template a
-            nd the total
-            number of items in the cart.
-        """
         product_id = str(request.GET.get("id"))
         self.remove_item_from_cart(request, product_id)
 
@@ -428,25 +400,6 @@ class DeleteFromCartView(View):
         )
 
     def remove_item_from_cart(self, request, product_id):
-        """
-        Removes an item from the cart session data.
-
-        Parameters:
-            request (HttpRequest): The HTTP request object.
-            product_id (str): The ID of the product to be removed from the cart.
-
-        Returns:
-            None
-
-        Description:
-            This function removes an item from the cart session data.
-            It takes the request object and the product ID as parameters.
-            It checks if the "cart_data_obj" key is present in the session.
-            If it is, it retrieves the cart data from the session.
-            If the product ID is found in the cart data, it removes the item
-            from the cart data.
-            Finally, it updates the cart data in the session.
-        """
         if "cart_data_obj" in request.session:
             cart_data = request.session["cart_data_obj"]
             if product_id in cart_data:
@@ -454,24 +407,103 @@ class DeleteFromCartView(View):
                 request.session["cart_data_obj"] = cart_data
 
     def calculate_cart_total(self, request):
-        """
-        Calculates the total amount of the items in the cart.
-
-        Parameters:
-            request (HttpRequest): The HTTP request object.
-
-        Returns:
-            float: The total amount of the items in the cart.
-
-        Description:
-            This function calculates the total amount of the items in the cart.
-            It first checks if the "cart_data_obj" key is present in the session.
-            If it is, it iterates over the values of the cart data and calculates
-            the total amount by multiplying the quantity of each item with its price.
-            The function returns the calculated total amount.
-        """
         cart_total_amount = 0
         if "cart_data_obj" in request.session:
             for item in request.session["cart_data_obj"].values():
                 cart_total_amount += int(item["quantity"]) * float(item["price"])
         return cart_total_amount
+
+
+# ---------------------------  ----------------------------------
+# ---------------------- Delete from cart  ends here ----------------
+
+
+class UpdateCartView(View):
+    def get(self, request, *args, **kwargs):
+        product_id = str(request.GET.get("id"))
+        new_quantity = int(request.GET.get("quantity", 1))
+        self.update_item_in_cart(request, product_id, new_quantity)
+
+        cart_total_amount = self.calculate_cart_total(request)
+
+        context = render_to_string(
+            "pages/async/cart_list.html",
+            {
+                "cart_data": request.session.get("cart_data_obj", {}),
+                "totalcartitems": len(request.session.get("cart_data_obj", {})),
+                "cart_total_amount": cart_total_amount,
+            },
+        )
+        return JsonResponse(
+            {
+                "data": context,
+                "totalcartitems": len(request.session.get("cart_data_obj", {})),
+            },
+        )
+
+    def update_item_in_cart(self, request, product_id, new_quantity):
+        if "cart_data_obj" in request.session:
+            cart_data = request.session["cart_data_obj"]
+            if product_id in cart_data:
+                cart_data[product_id]["quantity"] = new_quantity
+                request.session["cart_data_obj"] = cart_data
+
+    def calculate_cart_total(self, request):
+        cart_total_amount = 0
+        if "cart_data_obj" in request.session:
+            for item in request.session["cart_data_obj"].values():
+                cart_total_amount += int(item["quantity"]) * float(item["price"])
+        return cart_total_amount
+
+
+# ---------------------------  ----------------------------------
+# ---------------------- Update Cart  ends here ----------------
+
+
+class CheckoutView(TemplateView):
+    template_name = "pages/ecommerce/checkout.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cart_total_amount = 0
+        cart_data = self.request.session["cart_data_obj"]
+
+        for product_id, item in cart_data.items():
+            cart_total_amount += int(item["quantity"]) * float(item["price"])
+
+        context["cart_data"] = cart_data
+        context["totalcartitems"] = len(cart_data)
+        context["cart_total_amount"] = cart_total_amount
+
+        return context
+
+
+class WishlistListView(LoginRequiredMixin, ListView):
+    model = WishList
+    template_name = "pages/ecommerce/wish_list.html"
+    context_object_name = "wishlists"
+
+
+def add_to_wishlist(request):
+    product_id = request.GET.get("id")
+    product = Product.objects.get(id=product_id)
+
+    context = {}
+
+    wishlist_count = WishList.objects.filter(product=product, user=request.user).count()
+    print(wishlist_count)
+
+    if wishlist_count > 0:
+        context = {
+            "bool": True,
+        }
+    else:
+        new_wishlist = WishList.objects.create(
+            product=product,
+            user=request.user,
+        )
+        context = {
+            "bool": True,
+        }
+
+    return JsonResponse(context)

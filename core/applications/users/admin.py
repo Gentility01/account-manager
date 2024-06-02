@@ -11,6 +11,7 @@ from .models import Accountant
 from .models import Administrator
 from .models import AffiliatePartner
 from .models import ContentManager
+from .models import Customer
 from .models import CustomerSupportRepresentative
 from .models import DigitalGoodsDistribution
 from .models import HelpDeskTechnicalSupport
@@ -77,6 +78,11 @@ class ContentManagerAdmin(admin.ModelAdmin):
 @admin.register(MarketingAndSales)
 class MarketingAndSalesAdmin(admin.ModelAdmin):
     list_display = ["user", "marketing_strategy"]
+
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ["user"]
 
 
 @admin.register(Accountant)

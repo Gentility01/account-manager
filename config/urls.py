@@ -13,10 +13,14 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("users/", include("core.applications.users.urls", namespace="users")),
+    #  ecomercce manaement
     path(
         "ecommerce/", include("core.applications.ecommerce.urls", namespace="ecommerce")
     ),
+    # blog management
     path("blog/", include("core.applications.blog.urls", namespace="blog")),
+    # support management
+    path("support/", include("core.applications.supports.urls", namespace="support")),
     path("accounts/", include("allauth.urls")),
     # ckeditor
     path("ckeditor/", include("ckeditor_uploader.urls")),

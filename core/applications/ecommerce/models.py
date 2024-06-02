@@ -112,7 +112,9 @@ class Product(TitleandUIDTimeBasedModel, ImageTitleTimeBaseModels):
 
         return 0
 
-    # def get_discount_price
+    def get_discount_price(self):
+        if self.oldprice > 0:
+            return self.oldprice - self.price
 
     def __str__(self):
         return self.title
@@ -127,7 +129,21 @@ class ProductImages(ImageTitleTimeBaseModels):
     )
 
     class Meta:
-        verbose_name_plural = "Prouct images"
+        verbose_name_plural = "Product images"
+
+
+class ProductItem(TimeBasedModel):
+    product = auto_prefetch.ForeignKey(
+        "ecommerce.Product",
+        verbose_name=_("Product item"),
+        on_delete=SET_NULL,
+        null=True,
+    )
+    identifier = CharField(max_length=255, unique=True)
+    is_sold = BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.product.title} - {self.identifier}"
 
 
 class CartOrder(TimeBasedModel):
@@ -193,7 +209,7 @@ class ProductReview(TimeBasedModel):
 class WishList(TimeBasedModel):
     user = auto_prefetch.ForeignKey(
         "users.User",
-        verbose_name=_("User Review"),
+        verbose_name=_("User"),
         on_delete=SET_NULL,
         null=True,
     )

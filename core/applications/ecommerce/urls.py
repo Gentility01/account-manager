@@ -73,4 +73,12 @@ urlpatterns = [
         views.DeleteFromCartView.as_view(),
         name="delete_from_cart_list",
     ),
+    path(
+        "update-to-cart",
+        views.UpdateCartView.as_view(),
+        name="delete_from_cart_list",
+    ),
+    path("checkout", views.CheckoutView.as_view(), name="checkout"),
+    path("wish-lists", views.WishlistListView.as_view(), name="wishlists"),
+    path("add-to-wishlist", views.add_to_wishlist, name="add_to_wishlist"),
 ]

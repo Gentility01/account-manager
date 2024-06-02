@@ -23,12 +23,13 @@
             <div class="topbar-right">
               <div class="register-login style-2 pull-right">
                 {% if request.user.is_authenticated %}
-                  <a href="{% url 'users:detail' request.user.pk %}">profile</a>
+                  <a href="{% url 'users:dashboard_view' %}">dashboard</a>
+                  {% comment %} <a href="{% url 'users:detail' request.user.pk %}">profile</a> {% endcomment %}
                   <span>/</span>
                   <a href="{% url 'account_logout' %}">Signout</a>
                 {% else %}
                   {% if ACCOUNT_ALLOW_REGISTRATION %}
-                    <a href="{% url 'account_signup' %}">Signup</a>
+                    <a href="{% url 'users:customers_account' %}">Signup</a>
                   {% endif %}
                   <span>/</span>
                   <a href="{% url 'account_login' %}">Signin</a>
@@ -37,15 +38,15 @@
               <div class="currency-bar pull-right">
                 <ul>
                   <li>
-                    <a href="#">USD <i class="fa fa-angle-down"></i></a>
-                    <ul>
+                    <a href="{% url 'support:helppage' %}">HELP <i class="fa fa-angle-down"></i></a>
+                    {% comment %} <ul>
                       <li>
                         <a href="#">EUR</a>
                       </li>
                       <li>
                         <a href="#">AUD</a>
                       </li>
-                    </ul>
+                    </ul> {% endcomment %}
                   </li>
                   <li>
                     <span>|</span>
@@ -91,14 +92,14 @@
                   <a href="#" title="Track Your Order"><i class="ti-truck"></i></a>
                 </li> {% endcomment %}
                 <li>
-                  <a href="#"><i class="icon_heart_alt"></i><span>1</span></a>
+                  <a href="{% url 'ecommerce:wishlists' %}"><i class="icon_heart_alt"></i><span>{{ wishlist.count}}</span></a>
                 </li>
                 <li>
                   <a href="javascript:void(0);" class="minicart-icon"><i class="icon_bag_alt"></i><span class="cart-item-count">{{ request.session.cart_data_obj|length }}</span></a>
                   <div class="cart-dropdown">
                     <div class="mini-cart-checkout">
                       <a href="{% url 'ecommerce:cart_list' %}" class="btn-common view-cart">VIEW CART</a>
-                      <a href="checkout.html" class="btn-common checkout mt-10">CHECK OUT</a>
+                      <a href="{% url 'ecommerce:checkout' %}" class="btn-common checkout mt-10">CHECK OUT</a>
                     </div>
                   </div>
                 </li>

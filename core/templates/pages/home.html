@@ -4,8 +4,22 @@
 
 {% block main %}
   {% block content %}
+
     {% include 'partials/_messages.html' %}
+
+    <div class="container">
+      <div class="marquee">
+        <span>
+            {% for announcement in announcements %}
+                {% comment %} <strong>{{ announcement.title }}:</strong>  {% endcomment %}
+                {{ announcement.content|safe }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {% endfor %}
+        </span>
+    </div>
+    </div>
+
     {% include 'partials/_sidebar.html' %}
+
     <!--slider-area start-->
     <div class="slider-area">
       <div class="container">
@@ -29,20 +43,7 @@
                   </div>
                 </div>
               {% endfor %}
-              <div class="slider-single bg-3">
-                <div class="d-table">
-                  <div class="slider-caption">
-                    <h4>clothing</h4>
-                    <h2 class="cssanimation leDoorCloseLeft sequence">Gadgets</h2>
-                    <p>The 10 Best Man Collection 2018ss</p>
-                    <div class="slider-product-price">
-                      <del>$120.00</del>
-                      <span>$295.00</span>
-                    </div>
-                    <a href="#" class="btn-common mt-43">buy now</a>
-                  </div>
-                </div>
-              </div>
+
             </div>
           </div>
         </div>
@@ -208,7 +209,7 @@
                               <img src="{{ arrived.image.url }}" alt="" />
                             </a>
                             <div class="downsale">
-                              <span>-</span>${{ arrived.get_pecentage }}
+                              <span>-</span>${{ arrived.get_discount_price }}
                             </div>
                             <div class="product-quick-view">
                               <a href="{% url 'homeapp:product_detail' arrived.pk %}">detail view</a>
@@ -236,7 +237,7 @@
                                id="add-to-cart-btn"
                                data-index="{{ arrived.id }}">Add to
                             Cart</a>
-                            <a href="#" class="product-wishlist"><i class="ti-heart"></i></a>
+                            <a  class="product-wishlist add-to-wishlist" data-product-item={{arrived.id}}><i class="ti-heart"></i></a>
                           </div>
                         </div>
                         <!--single-product-->
@@ -285,7 +286,7 @@
                               <img src="{{ on_sale.image.url }}" alt="" />
                             </a>
                             <div class="downsale">
-                              <span>-</span>${{ on_sale.get_percentage }}
+                              <span>-</span>${{ on_sale.get_discount_price }}
                             </div>
                             <div class="product-quick-view">
                               <a href="{% url 'homeapp:product_detail' on_sale.pk %}">detail view</a>
@@ -313,7 +314,7 @@
                                id="add-to-cart-btn"
                                data-index="{{ on_sale.id }}">Add to
                             Cart</a>
-                            <a href="javascript:void(0);" class="product-wishlist"><i class="ti-heart"></i></a>
+                            <a href="javascript:void(0);" class="product-wishlist add-to-wishlist" data-product-item={{on_sale.id}}><i class="ti-heart"></i></a>
                           </div>
                         </div>
                         <!--single-product-->
@@ -358,7 +359,7 @@
                           <div class="product-thumb">
                             <img src="{{ feature.image.url }}" alt="" />
                             <div class="downsale">
-                              <span>-</span>${{ feature.get_percentage }}
+                              <span>-</span>${{ feature.get_discount_price }}
                             </div>
                             <div class="product-quick-view">
                               <a href="{% url 'homeapp:product_detail' feature.pk %}">detail view</a>
@@ -386,7 +387,7 @@
                                id="add-to-cart-btn"
                                data-index="{{ feature.id }}">Add to
                             Cart</a>
-                            <a href="javascript:void(0);" class="product-wishlist"><i class="ti-heart"></i></a>
+                            <a href="javascript:void(0);" class="product-wishlist add-to-wishlist" data-product-item={{feature.id}}><i class="ti-heart"></i></a>
                           </div>
                         </div>
                         <!--single-product-->
@@ -497,7 +498,7 @@
                         <img src="{{ product.image.url }}" alt="" />
                       </a>
                       <div class="downsale">
-                        <span>-</span>${{ product.get_percentage }}
+                        <span>-</span>${{ product.get_discount_price }}
                       </div>
                       <div class="product-quick-view">
                         <a href="{% url 'homeapp:product_detail' product.pk %}">detail view</a>
@@ -524,7 +525,7 @@
                       <a class="add-to-cart add-to-cart-btn"
                          id="add-to-cart-btn"
                          data-index="{{ product.id }}">Add to Cart</a>
-                      <a href="javascript:void(0);" class="product-wishlist"><i class="ti-heart"></i></a>
+                      <a  class="product-wishlist add-to-wishlist" data-product-item={{product.id}}><i class="ti-heart"></i></a>
                     </div>
                   </div>
                 </div>
@@ -561,7 +562,7 @@
                   <div class="product-action">
                     <a href="javascript:void(0);" class="product-compare"><i class="ti-control-shuffle"></i></a>
                     <a href="javascript:void(0);" class="add-to-cart">Add to Cart</a>
-                    <a href="javascript:void(0);" class="product-wishlist"><i class="ti-heart"></i></a>
+                    <a href="javascript:void(0);" class="product-wishlist add-to-wishlist"><i class="ti-heart"></i></a>
                   </div>
                 </div>
               </div>

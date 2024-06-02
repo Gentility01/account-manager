@@ -13,7 +13,7 @@ class MediaHelper:
     @staticmethod
     def _upload_path(model, filetype, filename):
         """
-        function to generate upload path for media files to prevent duplicate
+        Function to generate upload path for media files to prevent duplicate
         """
         path = f"{filetype}/{model._meta.model_name}/{timezone.localdate()}"
         ext = filename.rsplit(".", 1)
@@ -26,7 +26,7 @@ class MediaHelper:
 
     @staticmethod
     def get_image_upload_path(model, filename):
-        """generate upload path for images to prevent duplicate"""
+        """Generate upload path for images to prevent duplicate"""
         return MediaHelper._upload_path(model, "images", filename)
 
     @staticmethod

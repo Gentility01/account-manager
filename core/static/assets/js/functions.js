@@ -1,5 +1,5 @@
-$(document).ready(function() {
-    $("#reviewform").submit(function(e) {
+$(document).ready(function () {
+    $("#reviewform").submit(function (e) {
         e.preventDefault();
 
         $.ajax({
@@ -7,7 +7,7 @@ $(document).ready(function() {
             method: $(this).attr("method"),
             url: $(this).attr("action"),
             dataType: "json",
-            success: function(response) {
+            success: function (response) {
                 console.log("comment saved", response);
 
                 if (response.bool === true) {
@@ -16,7 +16,9 @@ $(document).ready(function() {
 
                     let context = response.context;
                     let created_at = new Date().toLocaleDateString('en-GB', {
-                        day: '2-digit', month: 'short', year: 'numeric'
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric'
                     });
 
                     // Construct a unique ID for the new comment
@@ -48,7 +50,7 @@ $(document).ready(function() {
                     console.error("Failed to save comment:", response.errors);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error("AJAX error:", status, error);
             }
         });
@@ -75,9 +77,9 @@ $(document).ready(function() {
 
 
 // --------------------------------------fiilter product
-$(document).ready(function() {
+$(document).ready(function () {
     // Event handler for clicking on filter checkboxes or the price filter button
-    $(".filter-checkbox, #price-filter-btn").on("click", function() {
+    $(".filter-checkbox, #price-filter-btn").on("click", function () {
         console.log("Checkbox or button clicked");
 
         // Initialize an empty object to hold the filter criteria
@@ -97,11 +99,11 @@ $(document).ready(function() {
         }
 
         // Iterate over each filter checkbox
-        $(".filter-checkbox").each(function() {
+        $(".filter-checkbox").each(function () {
             // Get the filter key from the data-filter attribute
             let filter_key = $(this).data("filter");
             // Create an array of checked values for the current filter key
-            filter_object[filter_key] = Array.from(document.querySelectorAll('input[data-filter="' + filter_key + '"]:checked')).map(function(element) {
+            filter_object[filter_key] = Array.from(document.querySelectorAll('input[data-filter="' + filter_key + '"]:checked')).map(function (element) {
                 return element.value;
             });
         });
@@ -113,25 +115,25 @@ $(document).ready(function() {
             url: "/filter-product", // URL to send the request to
             data: filter_object, // Data to be sent to the server
             dataType: "json", // Expect a JSON response from the server
-            beforeSend: function() {
+            beforeSend: function () {
                 console.log("Before send");
             },
             // Function to handle a successful response
-            success: function(response) {
+            success: function (response) {
                 console.log("Success");
                 console.log(response);
                 // Update the HTML content of the element with id 'filtered-product' with the response data
                 $("#filtered-product").html(response.data);
             },
             // Function to handle errors
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.log("Error: ", error);
             }
         });
     });
 
     // Event handler for when the price input loses focus
-    $("#max_price").on("blur", function() {
+    $("#max_price").on("blur", function () {
         let min_price = $(this).attr("min"); // Get the minimum price value
         let max_price = $(this).attr("max"); // Get the maximum price value
         let current_price = $(this).val(); // Get the current price value
@@ -162,14 +164,14 @@ $(document).ready(function() {
 
     // ----------------------------- Add to cart
 
-    $(".add-to-cart-btn").on("click", function(){
+    $(".add-to-cart-btn").on("click", function () {
         let this_val = $(this)
         let index = this_val.attr("data-index")
 
         let quantity = $(".product-quantity-" + index).val()
-        let product_title =  $(".product-title-" + index).val()
+        let product_title = $(".product-title-" + index).val()
 
-        let product_id =  $(".product-pid-" + index).val()
+        let product_id = $(".product-pid-" + index).val()
         let product_price = $("#product-price-" + index).text()
 
         let product_image = $(".product-image-" + index).val()
@@ -177,27 +179,27 @@ $(document).ready(function() {
 
         console.log("Quantity", quantity)
         console.log("Product id", product_id)
-        console.log("product price",product_price)
-        console.log("product titile",product_title)
-        console.log("current element",this_val)
-        console.log("current index",index)
-        console.log("product image",product_image)
+        console.log("product price", product_price)
+        console.log("product titile", product_title)
+        console.log("current element", this_val)
+        console.log("current index", index)
+        console.log("product image", product_image)
 
         $.ajax({
-            url:"/ecommerce/add-to-cart",
-            data:{
-                "id":product_id,
-                "qty":quantity,
-                "image":product_image,
-                "title":product_title,
-                "price":product_price
+            url: "/ecommerce/add-to-cart",
+            data: {
+                "id": product_id,
+                "qty": quantity,
+                "image": product_image,
+                "title": product_title,
+                "price": product_price
             },
-            dataType:"json",
-            beforeSend: function() {
-                this_val.html("Adding product to cart")
+            dataType: "json",
+            beforeSend: function () {
+                this_val.html("Adding...")
                 console.log("Adding product to cart")
             },
-            success: function(response) {
+            success: function (response) {
                 console.log("Success")
                 console.log(response)
                 this_val.html("Added 👍")
@@ -216,16 +218,15 @@ $(document).ready(function() {
 
     // ----------------------------- delete product from cart list
 
-    $(document).ready(function() {
-        function attachDeleteHandlers() {
-            $(".delete-product").off("click").on("click", function(e) {
+    $(document).ready(function () {
+        function attachHandlers() {
+            // Attach delete handlers
+            $(".delete-product").off("click").on("click", function (e) {
                 e.preventDefault(); // Prevent the default action
-
                 let product_id = $(this).data("product");
                 let this_value = $(this);
 
                 console.log("product id ", product_id);
-                console.log("this val ", this_value);
 
                 $.ajax({
                     url: "/ecommerce/delete-from-cart", // Ensure this URL matches your Django URL pattern
@@ -233,23 +234,94 @@ $(document).ready(function() {
                         "id": product_id
                     },
                     dataType: "json",
-                    beforeSend: function() {
+                    beforeSend: function () {
                         this_value.hide(); // Hide the delete button before sending the request
                     },
-                    success: function(response) {
+                    success: function (response) {
                         $(".cart-item-count").text(response.totalcartitems); // Update the cart item count
                         $("#cart-list").html(response.data); // Update the cart list with new data
-                        attachDeleteHandlers(); // Re-attach handlers to the new elements
+                        attachHandlers(); // Re-attach handlers to the new elements
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error('Error deleting item from cart:', error);
                         this_value.show(); // Show the delete button again in case of an error
                     }
                 });
             });
+
+            // Attach update handlers
+            $(".update-product").off("click").on("click", function (e) {
+                e.preventDefault(); // Prevent the default action
+                let product_id = $(this).data("product");
+                let new_quantity = $(this).closest("tr").find("input[type='text']").val();
+                let this_value = $(this);
+
+                console.log("product id ", product_id);
+                console.log("new quantity ", new_quantity);
+
+                $.ajax({
+                    url: "/ecommerce/update-to-cart", // Ensure this URL matches your Django URL pattern
+                    data: {
+                        "id": product_id,
+                        "quantity": new_quantity // Include the new quantity in the request
+                    },
+                    dataType: "json",
+                    beforeSend: function () {
+                        this_value.hide(); // Hide the update button before sending the request
+                    },
+                    success: function (response) {
+                        $(".cart-item-count").text(response.totalcartitems); // Update the cart item count
+                        $("#cart-list").html(response.data); // Update the cart list with new data
+                        attachHandlers(); // Re-attach handlers to the new elements
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error updating item in cart:', error);
+                        this_value.show(); // Show the update button again in case of an error
+                    }
+                });
+            });
         }
 
-        attachDeleteHandlers(); // Initial attachment of event handlers
+        // Initial attachment of event handlers
+        attachHandlers();
     });
+
+
+    // Add product to wishlist
+    $(".add-to-wishlist").on("click", function () {
+        let this_val = $(this)
+        let product_id = $(this).attr("data-product-item")
+
+
+        console.log("product id ", product_id);
+        console.log("this val ", this_val);
+
+        $.ajax({
+            url: "/ecommerce/add-to-wishlist",
+            data: {
+                "id": product_id
+            },
+            dataType: "json",
+            beforeSend: function () {
+                this_val.html("❤️")
+                console.log("Adding product to wishlist");
+            },
+            success: function (response) {
+               if(response.bool === true){
+                console.log("Success")
+                console.log(response)
+
+                this_val.html("❤️")
+                console.log("Added product to wishlist")
+                $(".wishlist-item-count").text(response.totalwishlistitems)
+
+               }
+            }
+        })
+
+
+
+
+    })
 
 });

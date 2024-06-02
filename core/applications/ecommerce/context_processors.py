@@ -6,6 +6,7 @@ from core.applications.blog.models import BlogCategory
 from core.applications.blog.models import Post
 from core.applications.ecommerce.models import Category
 from core.applications.ecommerce.models import Product
+from core.applications.ecommerce.models import WishList
 
 
 def product_list(request):
@@ -15,7 +16,7 @@ def product_list(request):
     :param request: HTTP request object
     :return: Dictionary containing the product list
     """
-    products = Product.objects.all().order_by("-created_at", "-updated_at")
+    products = Product.objects.all().order_by("-created_at", "-updated_at", "-id")
     blog_categories = BlogCategory.objects.all().order_by("-created_at")
     blog_posts = Post.objects.all().order_by("-created_at")
     in_stock = products.filter(in_stock=True)
@@ -31,6 +32,12 @@ def product_list(request):
 
     banners = Banner.objects.all().order_by("-created_at")
 
+    try:
+        wishlist = WishList.objects.filter(user=request.user)
+    except AttributeError:
+        # messages.warning(request, "Please Login to access wishlist.")
+        wishlist = 0
+
     return {
         "in_stock": in_stock,
         "best_seller": best_seller,
@@ -44,6 +51,7 @@ def product_list(request):
         "blog_categories": blog_categories,
         "blog_posts": blog_posts,
         "banners": banners,
+        "wishlist": wishlist,
     }
 
 
