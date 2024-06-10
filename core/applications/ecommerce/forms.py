@@ -22,7 +22,9 @@ from core.utils.choices import Rating
 class ProductForm(ModelForm):
     description = CharField(
         label="Description",
-        widget=Textarea(attrs={"class": "ckeditor"}),
+        widget=CKEditorWidget(
+            attrs={"class": "form-control", "placeholder": "Enter product description"},
+        ),
     )
     tags = TagField(required=False)
 
@@ -44,6 +46,8 @@ class ProductForm(ModelForm):
             "best_seller",
             "special_offer",
             "just_arrived",
+            "resource",
+            "unique_keys",
         ]
         widgets = {
             "title": TextInput(
@@ -70,7 +74,7 @@ class ProductForm(ModelForm):
             "spacification": CKEditorWidget(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "Enter product spacification",
+                    "placeholder": "Enter product specification",
                 },
             ),
             "tags": TextInput(attrs={"class": "form-control"}),
@@ -83,12 +87,26 @@ class ProductForm(ModelForm):
                     "placeholder": "Enter product category",
                 },
             ),
-            "in_stock": CheckboxInput(),
-            "featured": CheckboxInput(),
-            "digital": CheckboxInput(),
-            "best_seller": CheckboxInput(),
-            "special_offer": CheckboxInput(),
-            "just_arrived": CheckboxInput(),
+            "in_stock": CheckboxInput(attrs={"class": "form-check-input"}),
+            "featured": CheckboxInput(attrs={"class": "form-check-input"}),
+            "digital": CheckboxInput(attrs={"class": "form-check-input"}),
+            "best_seller": CheckboxInput(attrs={"class": "form-check-input"}),
+            "special_offer": CheckboxInput(attrs={"class": "form-check-input"}),
+            "just_arrived": CheckboxInput(attrs={"class": "form-check-input"}),
+            "resource": FileInput(
+                attrs={
+                    "class": "form-control",
+                    "id": "resourceFile",
+                    "name": "resource",
+                },
+            ),
+            "unique_keys": Textarea(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter unique keys as JSON",
+                    "rows": 3,
+                },
+            ),
         }
 
 

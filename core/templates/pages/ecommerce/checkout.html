@@ -4,8 +4,8 @@
 
 {% block main %}
 {% block content %}
+
 {% include 'partials/_messages.html' %}
-{% include 'partials/_sidebar.html' %}
 
 <div class="shopping-cart-steps">
   <div class="container">
@@ -40,45 +40,32 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
-        <p>Returning customer? <a href="#">Click here</a> to login</p>
-      </div>
+        {% comment %} <p>Returning customer? <a href="#">Click here</a> to login</p> {% endcomment %}
+      </div>/
     </div>
     <div class="row mt-10">
       <div class="col-lg-8">
         <div class="billing-form">
-          <h4>Billing Address</h4>
+          <h4>My Details </h4>
           <form action="#">
             <div class="row">
               <div class="col-lg-3 align-items-center">
                 <label>COUNTRY *</label>
               </div>
               <div class="col-lg-9">
-                <select>
-                  <option>Bangladesh</option>
-                  <option>India</option>
-                  <option>United States</option>
-                  <option>Australia</option>
-                  <option>Brazil</option>
-                </select>
+                {{user_country}}
               </div>
             </div>
+
             <div class="row">
               <div class="col-lg-3">
-                <label>FIRST NAME *</label>
+                <label>Name*</label>
               </div>
               <div class="col-lg-9">
-                <input type="text" />
+                {{user_name}}
               </div>
             </div>
-            <div class="row">
-              <div class="col-lg-3">
-                <label>LAST NAME *</label>
-              </div>
-              <div class="col-lg-9">
-                <input type="text" />
-              </div>
-            </div>
-            <div class="row">
+            {% comment %} <div class="row">
               <div class="col-lg-3">
                 <label>COMPANY NAME</label>
               </div>
@@ -94,37 +81,37 @@
                 <input type="text" placeholder="Street Address" />
                 <input type="text" placeholder="Apartment, suite, unite ect (optinal)" class="mt-sm-30" />
               </div>
-            </div>
-            <div class="row">
+            </div> {% endcomment %}
+            {% comment %} <div class="row">
               <div class="col-lg-3">
                 <label>TOWN / CITY *</label>
               </div>
               <div class="col-lg-9">
                 <input type="text" />
               </div>
-            </div>
-            <div class="row">
+            </div> {% endcomment %}
+            {% comment %} <div class="row">
               <div class="col-lg-3">
                 <label>COUNTRY / STATES</label>
               </div>
               <div class="col-lg-9">
                 <input type="text" />
               </div>
-            </div>
-            <div class="row">
+            </div> {% endcomment %}
+            {% comment %} <div class="row">
               <div class="col-lg-3">
                 <label>POSTCODE / ZIP *</label>
               </div>
               <div class="col-lg-9">
                 <input type="text" />
               </div>
-            </div>
+            </div> {% endcomment %}
             <div class="row">
               <div class="col-lg-3">
                 <label>EMAIL ADDRESS *</label>
               </div>
               <div class="col-lg-9">
-                <input type="text" />
+                {{ user_email }}
               </div>
             </div>
             <div class="row">
@@ -132,36 +119,36 @@
                 <label>PHONE *</label>
               </div>
               <div class="col-lg-9">
-                <input type="text" />
+                {{ user_phone }}
               </div>
             </div>
-            <div class="row">
+            {% comment %} <div class="row">
               <div class="col-lg-12">
                 <p>Create an account by entering the information below. If you are a returning customer please login
                   at the top of the page</p>
               </div>
-            </div>
-            <div class="row">
+            </div> {% endcomment %}
+            {% comment %} <div class="row">
               <div class="col-lg-3">
                 <label>ACCOUNT PASSWORD *</label>
               </div>
               <div class="col-lg-9">
                 <input type="text" />
               </div>
-            </div>
-            <div class="row">
+            </div> {% endcomment %}
+            {% comment %} <div class="row">
               <div class="col-lg-3">
                 <label class="p-0">ORDER NOTES</label>
               </div>
               <div class="col-lg-9">
                 <input type="text" class="p-0" />
               </div>
-            </div>
+            </div> {% endcomment %}
           </form>
         </div>
       </div>
       <div class="col-lg-4">
-        <div class="sidebar-checkout">
+        {% comment %} <div class="sidebar-checkout">
           <div class="cart-box cart-coupon fix">
             <h5>Promotrional Code</h5>
             <div class="cart-box-inner">
@@ -170,9 +157,9 @@
               <a href="#" class="btn-common">Apply</a>
             </div>
           </div>
-        </div>
+        </div> {% endcomment %}
         <div class="order-details mt-30">
-          <h4>Your Order</h4>
+          <h4>My Order</h4>
           <div class="order-details-inner">
             <table>
               <thead>
@@ -194,26 +181,63 @@
               </tbody>
             </table>
             <div class="payment-gateways mt-30">
-              <div class="single-payment-gateway">
+              {% comment %} <div class="single-payment-gateway">
                 <input type="checkbox" id="system1" />
                 <label for="system1">Create an account?</label>
                 <div class="payment-gateway-desc">
                   <p>Lorem ipsum dolor sit amet, consectetur adip elit, sed do eiusmod tempor incididunt ut labore et
                     dolore magna aliqua.</p>
                 </div>
-              </div>
-              <div class="single-payment-gateway">
+              </div> {% endcomment %}
+              {% comment %} <div class="single-payment-gateway">
                 <input type="radio" id="system2" />
                 <label for="system2">Cheque Payment</label>
-              </div>
-              <div class="single-payment-gateway">
+              </div> {% endcomment %}
+              {% comment %} <div class="single-payment-gateway">
                 <input type="radio" id="system3" />
                 <label for="system3">Paypal</label>
+              </div> {% endcomment %}
+            </div>
+            <form id="paymentForm">
+              <div class="form-group">
+
+                {% comment %} <label for="email">Email Address</label> {% endcomment %}
+
+                <input type="hidden" id="email-address" value="{{ user_email }}" required />
+
               </div>
-            </div>
-            <div class="place-order text-center mt-60">
-              <a href="#" class="btn-common width-180">place porder</a>
-            </div>
+
+              <div class="form-group">
+
+                {% comment %} <label for="amount">Amount</label> {% endcomment %}
+
+                <input type="hidden" id="amount" value="{{ order_price }}" required />
+
+              </div>
+
+              <div class="form-group">
+
+                {% comment %} <label for="first-name">First Name</label> {% endcomment %}
+
+                <input type="hidden" id="first-name" value="{{ user_name }}" />
+
+              </div>
+
+              <div class="form-group">
+
+                {% comment %} <label for="last-name">Last Name</label> {% endcomment %}
+
+                {% comment %} <input type="text" id="last-name" /> {% endcomment %}
+
+              </div>
+              {% comment %} <form method="post">
+                {% csrf_token %} {% endcomment %}
+                {% comment %} <input type="hidden" name="order_id" value="{{ order.id }}"> {% endcomment %}
+                <div class="place-order text-center mt-60">
+                  <a href="{% url 'ecommerce:proceed_payment' %}" type="submit" class="btn-common width-180">Proceed To
+                    Payment</a>
+                </div>
+              {% comment %} </form> {% endcomment %}
           </div>
         </div>
       </div>
@@ -223,7 +247,7 @@
 <!--checkout-area end-->
 
 <!--brands-area start-->
-<div class="container mt-20">
+{% comment %} <div class="container mt-20">
   <div class="brands-area br-none">
     <div class="row">
       <div class="col-lg-12">
@@ -272,7 +296,28 @@
       </div>
     </div>
   </div>
-</div>
-<!--brands-area end-->
+
+</div> {% endcomment %}
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+function makePaystackPayment() {
+    let ref = "{{ payment.reference }}";
+    let obj = {
+        key: "{{ paystack_public_key }}",
+        email: "{{ user_email }}",
+        amount: "{{ payment.amount_value }}",
+        ref: ref,
+        onClose: function(){
+            alert('Window closed.');
+        }
+    };
+
+    var handler = PaystackPop.setup(obj);
+    handler.openIframe();
+}
+</script>
+
+
 {% endblock content %}
 {% endblock main %}

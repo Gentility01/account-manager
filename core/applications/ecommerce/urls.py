@@ -79,6 +79,40 @@ urlpatterns = [
         name="delete_from_cart_list",
     ),
     path("checkout", views.CheckoutView.as_view(), name="checkout"),
-    path("wish-lists", views.WishlistListView.as_view(), name="wishlists"),
-    path("add-to-wishlist", views.add_to_wishlist, name="add_to_wishlist"),
+    path("proceed-payment", views.ProceedPayment.as_view(), name="proceed_payment"),
+    path(
+        "payment-complete",
+        views.PaymentCompleteView.as_view(),
+        name="payment_complete",
+    ),
+    path(
+        "payment-failed",
+        views.PaymentFailedView.as_view(),
+        name="payment_failed",
+    ),
+    path(
+        "wish-lists",
+        views.WishlistListView.as_view(),
+        name="wishlists",
+    ),
+    path(
+        "add-to-wishlist",
+        views.AddToWishlistView.as_view(),
+        name="add_to_wishlist",
+    ),
+    path(
+        "verify-payment/<str:reference>/",
+        views.VerifyPaymentView.as_view(),
+        name="verify_payment",
+    ),
+    path(
+        "initiate-payment/<int:order_id>/",
+        views.InitiatePaymentView.as_view(),
+        name="initiate_payment",
+    ),
+    path(
+        "purchased-product",
+        views.PurchasedProductsView.as_view(),
+        name="purchased_products",
+    ),
 ]

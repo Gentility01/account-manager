@@ -4,9 +4,9 @@ from core.applications.ecommerce.models import Address
 from core.applications.ecommerce.models import CartOrder
 from core.applications.ecommerce.models import CartOrderItems
 from core.applications.ecommerce.models import Category
+from core.applications.ecommerce.models import Payment
 from core.applications.ecommerce.models import Product
 from core.applications.ecommerce.models import ProductImages
-from core.applications.ecommerce.models import ProductItem
 from core.applications.ecommerce.models import ProductReview
 from core.applications.ecommerce.models import Tags
 from core.applications.ecommerce.models import WishList
@@ -21,14 +21,9 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ["id"]
 
 
-class ProductItemInline(admin.TabularInline):
-    model = ProductItem
-    extra = 1  # Number of extra forms to display
-
-
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ProductImagesAdmin, ProductItemInline]
+    inlines = [ProductImagesAdmin]
     list_display = [
         "user",
         "title",
@@ -76,4 +71,9 @@ class AddressAdmin(admin.ModelAdmin):
 
 @admin.register(CartOrderItems)
 class CartOrderItemsAdmin(admin.ModelAdmin):
-    list_display = ["order", "item", "quantity", "price", "invoice_no"]
+    list_display = ["order", "quantity", "price", "invoice_no"]
+
+
+@admin.register(Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ["user", "order", "amount", "reference", "status"]

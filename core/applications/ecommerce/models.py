@@ -1,12 +1,19 @@
+import secrets
+from decimal import Decimal
+
 import auto_prefetch
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.conf import settings
 from django.contrib.auth.models import Permission
+from django.core.validators import MinValueValidator
 from django.db.models import CASCADE
 from django.db.models import SET_NULL
 from django.db.models import BooleanField
 from django.db.models import CharField
 from django.db.models import DecimalField
+from django.db.models import FileField
 from django.db.models import IntegerField
+from django.db.models import JSONField
 from django.db.models import SlugField
 from django.db.models import TextField
 from django.utils.text import slugify
@@ -16,10 +23,12 @@ from taggit.managers import TaggableManager
 from core.utils.choices import ProductStatus
 from core.utils.choices import Rating
 from core.utils.choices import Status
+from core.utils.media import MediaHelper
 from core.utils.models import ImageTitleTimeBaseModels
 from core.utils.models import TimeBasedModel
 from core.utils.models import TitleandUIDTimeBasedModel
 from core.utils.models import TitleTimeBasedModel
+from core.utils.payments import PayStack
 
 # Create your models here.
 
@@ -82,9 +91,21 @@ class Product(TitleandUIDTimeBasedModel, ImageTitleTimeBaseModels):
         null=True,
     )
     description = RichTextUploadingField("Description", default="", null=True)
-    price = DecimalField(max_digits=100, decimal_places=2)
-    oldprice = DecimalField(max_digits=100, decimal_places=2)
+    price = DecimalField(
+        max_digits=100,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal("0.00"))],
+    )
+    oldprice = DecimalField(
+        max_digits=100,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal("0.00"))],
+    )
     spacification = RichTextUploadingField("specification", default="", null=True)
+    unique_keys = JSONField(
+        default=list,
+        help_text="List of unique keys for the product",
+    )
 
     product_status = CharField(
         choices=Status.choices,
@@ -98,6 +119,11 @@ class Product(TitleandUIDTimeBasedModel, ImageTitleTimeBaseModels):
     best_seller = BooleanField(default=False)
     special_offer = BooleanField(default=False)
     just_arrived = BooleanField(default=True)
+    resource = FileField(
+        upload_to=MediaHelper.get_file_upload_path,
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         verbose_name_plural = "Products"
@@ -132,28 +158,19 @@ class ProductImages(ImageTitleTimeBaseModels):
         verbose_name_plural = "Product images"
 
 
-class ProductItem(TimeBasedModel):
-    product = auto_prefetch.ForeignKey(
-        "ecommerce.Product",
-        verbose_name=_("Product item"),
-        on_delete=SET_NULL,
-        null=True,
-    )
-    identifier = CharField(max_length=255, unique=True)
-    is_sold = BooleanField(default=False)
-
-    def __str__(self):
-        return f"{self.product.title} - {self.identifier}"
-
-
 class CartOrder(TimeBasedModel):
     user = auto_prefetch.ForeignKey(
         "users.User",
         verbose_name=_("User Order"),
         on_delete=CASCADE,
         null=True,
+        related_name="cart_orders",
     )
-    price = DecimalField(max_digits=100, decimal_places=2)
+    price = DecimalField(
+        max_digits=100,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal("0.00"))],
+    )
     paid_status = BooleanField(default=False)
     product_status = CharField(
         choices=ProductStatus.choices,
@@ -164,6 +181,9 @@ class CartOrder(TimeBasedModel):
     class Meta:
         verbose_name_plural = "Cart Orders"
 
+    def __str__(self):
+        return f"{self.user}'s cart order"
+
 
 class CartOrderItems(TimeBasedModel):
     order = auto_prefetch.ForeignKey(
@@ -171,16 +191,83 @@ class CartOrderItems(TimeBasedModel):
         verbose_name=_("Order"),
         on_delete=CASCADE,
         null=True,
+        related_name="order_items",
     )
-    item = CharField(max_length=200)
-    image = CharField(max_length=200)
-    quantity = IntegerField(default=0)
-    price = DecimalField(max_digits=100, decimal_places=2)
-    total = DecimalField(max_digits=100, decimal_places=2)
+    product = auto_prefetch.ForeignKey(
+        Product,
+        verbose_name=_("Product"),
+        on_delete=SET_NULL,
+        null=True,
+    )
+    unique_key = CharField(max_length=255, blank=True, null=True)
+    quantity = IntegerField(default=1, validators=[MinValueValidator(1)])
+    price = DecimalField(
+        max_digits=100,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal("0.00"))],
+    )
+    total = DecimalField(
+        max_digits=100,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal("0.00"))],
+    )
     invoice_no = CharField(max_length=20, default="", blank=True)
 
     class Meta:
         verbose_name_plural = "Cart Order Items"
+
+    def __str__(self):
+        return f"{self.product} - {self.quantity} item(s)"
+
+
+class Payment(TimeBasedModel):
+    user = auto_prefetch.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=CASCADE,
+        related_name="payments",
+        default="",
+        blank=True,
+    )
+    order = auto_prefetch.OneToOneField(
+        "ecommerce.CartOrder",
+        on_delete=CASCADE,
+        related_name="payment",
+        default="",
+        blank=True,
+    )
+    amount = DecimalField(max_digits=100, decimal_places=2, default="", blank=True)
+    reference = CharField(max_length=100, unique=True, default="", blank=True)
+    status = CharField(max_length=20, default="pending", blank=True)
+    verified = BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return f"Payment for {self.order}"
+
+    def save(self, *args, **kwargs) -> None:
+        if not self.reference:
+            while True:
+                reference = secrets.token_urlsafe(20)
+                if not Payment.objects.filter(reference=reference).exists():
+                    self.reference = reference
+                    break
+        super().save(*args, **kwargs)
+
+    def amount_value(self) -> int:
+        return int(self.amount * 100)
+
+    def verify_payment(self) -> bool:
+        paystack = PayStack()
+        status, result = paystack.verify_payment(self.reference)  # Fixed typo here
+        if status:
+            if result["amount"] / 100 == self.amount:  # Amount in kobo
+                self.status = "verified"
+                self.save()
+                self.order.paid_status = True
+                self.order.save()
+                return True
+        self.status = "failed"
+        self.save()
+        return False
 
 
 class ProductReview(TimeBasedModel):

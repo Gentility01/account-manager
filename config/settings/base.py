@@ -233,6 +233,12 @@ EMAIL_BACKEND = env(
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = "mastergentility5@gmail.com"
+# EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+# DEFAULT_FROM_EMAIL  = EMAIL_HOST_USER
 
 # ADMIN
 # ------------------------------------------------------------------------------
@@ -324,3 +330,9 @@ cloudinary.config(
     api_secret=env("CLOUDINARY_API_SECRET"),
     secure=True,
 )
+
+
+# pAYSTACK PAYMENT KEYS
+
+PAYSTACK_SECRET_KEY = env("PAYSTACK_SECRET_KEY")
+PAYSTACK_PUBLIC_KEY = env("PAYSTACK_PUBLIC_KEY")

@@ -12,6 +12,7 @@ from django.views.generic import RedirectView
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
 
+from core.applications.ecommerce.models import CartOrder
 from core.applications.users.forms import CustomSignupForm
 from core.applications.users.models import Account
 from core.applications.users.models import Accountant
@@ -68,6 +69,14 @@ user_redirect_view = UserRedirectView.as_view()
 
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = "pages/dashboard/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        orders = CartOrder.objects.filter(user=self.request.user)
+
+        context["orders"] = orders
+
+        return context
 
 
 dashboard_view = DashboardView.as_view()

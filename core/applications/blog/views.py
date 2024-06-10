@@ -7,12 +7,12 @@ from django.views.generic import DetailView
 from django.views.generic import ListView
 from django.views.generic import UpdateView
 
+from core.applications.blog.forms import Banner
 from core.applications.blog.forms import BannerForm
+from core.applications.blog.forms import BlogCategory
 from core.applications.blog.forms import BlogCategoryForm
+from core.applications.blog.forms import Post
 from core.applications.blog.forms import PostForm
-from core.applications.blog.models import Banner
-from core.applications.blog.models import BlogCategory
-from core.applications.blog.models import Post
 from core.utils.views import ContentManagerRequiredMixin
 
 # Create your views here.

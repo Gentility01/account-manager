@@ -34,7 +34,7 @@ def product_list(request):
 
     try:
         wishlist = WishList.objects.filter(user=request.user)
-    except AttributeError:
+    except:
         # messages.warning(request, "Please Login to access wishlist.")
         wishlist = 0
 

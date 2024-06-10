@@ -124,6 +124,19 @@
               </div>
               <div class="select">{{ form.product_status }}</div>
             </fieldset>
+            <fieldset class="brand">
+              <div class="body-title mb-10">
+                {{ form.resource.label }} <span class="tf-color-1">*</span>
+              </div>
+              <div class="select">{{ form.resource }}</div>
+            </fieldset>
+            <fieldset class="brand">
+              <div class="body-title mb-10">
+                {{ form.unique_keys.label }} <span class="tf-color-1">*</span>
+              </div>
+              <div class="select">{{ form.unique_keys }}</div>
+              <small><b>Adding a unique key follow this example ["your api key"]</b></small>
+            </fieldset>
             <div class="cols gap22">
               <fieldset class="name">
                 <div class="body-title mb-10">{{ form.in_stock.label }}</div>

@@ -12,6 +12,8 @@ from django.views.generic import View
 
 from core.applications.blog.models import Announcement
 from core.applications.ecommerce.forms import ProductReviewForm
+from core.applications.ecommerce.models import CartOrder
+from core.applications.ecommerce.models import CartOrderItems
 from core.applications.ecommerce.models import Category
 from core.applications.ecommerce.models import Product
 from core.applications.ecommerce.models import ProductImages
@@ -35,7 +37,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = "dashboard.html"
     login_url = reverse_lazy(
         "login",
-    )  # Assuming 'login' is the name of the login URL pattern
+    )  # Assuming "login" is the name of the login URL pattern
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.administrator_profile.exists():
@@ -43,7 +45,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             return redirect(
                 reverse_lazy("not_administrator"),
             )
-        # Assuming 'not_administrator' is the name of the URL pattern for the page
+        # Assuming "not_administrator" is the name of the URL pattern for the page
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -225,3 +227,17 @@ class ProductFilterView(View):
                 {"error": "An error occurred while filtering products."},
                 status=500,
             )
+
+
+class OrderDetails(LoginRequiredMixin, DetailView):
+    model = CartOrder
+    template_name = "pages/order_details.html"
+    context_object_name = "order"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order = CartOrder.objects.get(user=self.request.user)
+        products = CartOrderItems.objects.filter(order=order)
+
+        context["products"] = products
+        return context

@@ -1,10 +1,17 @@
+from decimal import Decimal
+
+import requests
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.mail import send_mail
 from django.db.models import Avg
 from django.db.models import Count
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.views.generic import DeleteView
@@ -19,7 +26,10 @@ from core.applications.ecommerce.forms import ProductForm
 from core.applications.ecommerce.forms import ProductImagesForm
 from core.applications.ecommerce.forms import ProductReviewForm
 from core.applications.ecommerce.forms import TagsForm
+from core.applications.ecommerce.models import CartOrder
+from core.applications.ecommerce.models import CartOrderItems
 from core.applications.ecommerce.models import Category
+from core.applications.ecommerce.models import Payment
 from core.applications.ecommerce.models import Product
 from core.applications.ecommerce.models import ProductImages
 from core.applications.ecommerce.models import ProductReview
@@ -201,7 +211,7 @@ class AddReviewsView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         """
-        Saves the form data and returns a JSON response containing the user's username,
+        Saves the form data and returns a JSON response containing the user"s username,
         the review text, the rating,
         and the average rating for the product.
 
@@ -211,7 +221,7 @@ class AddReviewsView(LoginRequiredMixin, CreateView):
         Returns:
             JsonResponse: A JSON response containing the following keys:
                 - bool (bool): True if the form is valid, False otherwise.
-                - context (dict): A dictionary containing the user's username,
+                - context (dict): A dictionary containing the user"s username,
                   the review text, and the rating.
                 - average_review (dict): A dictionary containing the average rating for
                 the product.
@@ -220,6 +230,7 @@ class AddReviewsView(LoginRequiredMixin, CreateView):
             Product.DoesNotExist: If the product with the
             given primary key does not exist.
         """
+
         # Check if the user is authenticated and if the user has added a review already
         product = form.instance.product
 
@@ -327,7 +338,7 @@ class CartListView(TemplateView):
 
     This view retrieves the cart data from the session and calculates the total amount
     based on the quantity and price of each item in the cart. It then renders the
-    'pages/ecommerce/cart_list.html' template, passing the cart data, total cart items,
+    "pages/ecommerce/cart_list.html" template, passing the cart data, total cart items,
     and total amount as context variables.
     """
 
@@ -460,22 +471,264 @@ class UpdateCartView(View):
 # ---------------------- Update Cart  ends here ----------------
 
 
-class CheckoutView(TemplateView):
+class CheckoutView(LoginRequiredMixin, TemplateView):
     template_name = "pages/ecommerce/checkout.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cart_total_amount = 0
-        cart_data = self.request.session["cart_data_obj"]
+        cart_data = self.request.session.get(
+            "cart_data_obj",
+            {},
+        )  # Fetch cart data from session
 
-        for product_id, item in cart_data.items():
-            cart_total_amount += int(item["quantity"]) * float(item["price"])
+        # Calculate total cart amount
+        cart_total_amount = sum(
+            Decimal(item["price"]) * int(item["quantity"])
+            for item in cart_data.values()
+        )
 
-        context["cart_data"] = cart_data
-        context["totalcartitems"] = len(cart_data)
-        context["cart_total_amount"] = cart_total_amount
+        # Create an order in the database
+        order = CartOrder.objects.create(
+            user=self.request.user,
+            price=cart_total_amount,
+            paid_status=False,
+        )
+
+        # Create order items in the database
+        order_items = [
+            CartOrderItems(
+                order=order,
+                product=get_object_or_404(Product, id=product_id),
+                invoice_no=f"INVOICE_NO_{order.id}",
+                quantity=int(item["quantity"]),
+                price=Decimal(item["price"]),
+                total=Decimal(item["price"]) * int(item["quantity"]),
+            )
+            for product_id, item in cart_data.items()
+        ]
+
+        CartOrderItems.objects.bulk_create(order_items)
+
+        user = self.request.user
+        # Update context with necessary data
+        context.update(
+            {
+                "user_name": user.name,
+                "user_email": user.email,
+                "user_country": user.country,
+                "user_phone": user.phone_no,
+                "cart_data": cart_data,
+                "totalcartitems": len(cart_data),
+                "cart_total_amount": cart_total_amount,
+                "order_price": order.price,
+                "order_id": order.id,
+            },
+        )
 
         return context
+
+
+class ProceedPayment(LoginRequiredMixin, TemplateView):
+    template_name = "pages/ecommerce/checkout.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cart_data = self.request.session.get(
+            "cart_data_obj",
+            {},
+        )  # Fetch cart data from session
+
+        # Calculate total cart amount
+        cart_total_amount = sum(
+            Decimal(item["price"]) * int(item["quantity"])
+            for item in cart_data.values()
+        )
+
+        # Create an order in the database
+        order = CartOrder.objects.create(
+            user=self.request.user,
+            price=cart_total_amount,
+            paid_status=False,
+        )
+
+        # Create order items in the database
+        order_items = [
+            CartOrderItems(
+                order=order,
+                product=get_object_or_404(Product, id=product_id),
+                invoice_no=f"INVOICE_NO_{order.id}",
+                quantity=int(item["quantity"]),
+                price=Decimal(item["price"]),
+                total=Decimal(item["price"]) * int(item["quantity"]),
+            )
+            for product_id, item in cart_data.items()
+        ]
+
+        CartOrderItems.objects.bulk_create(order_items)
+
+        user = self.request.user
+        # Update context with necessary data
+        context.update(
+            {
+                "user_name": user.name,
+                "user_email": user.email,
+                "user_country": user.country,
+                "user_phone": user.phone_no,
+                "cart_data": cart_data,
+                "totalcartitems": len(cart_data),
+                "cart_total_amount": cart_total_amount,
+                "order_price": order.price,
+                "order_id": order.id,
+            },
+        )
+
+        return context
+
+    # Overriding the get method to redirect to initiate payment
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return redirect("ecommerce:initiate_payment", order_id=context["order_id"])
+
+
+class InitiatePaymentView(LoginRequiredMixin, TemplateView):
+    template_name = "pages/ecommerce/initiate_payment.html"
+
+    # Overriding the get method to initialize payment
+    def get(self, request, order_id, *args, **kwargs):
+        order = get_object_or_404(CartOrder, id=order_id, user=request.user)
+
+        # Get or create a payment record
+        payment, created = Payment.objects.get_or_create(
+            order=order,
+            defaults={
+                "user": request.user,
+                "amount": order.price,
+            },
+        )
+
+        headers = {
+            "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}",
+            "Content-Type": "application/json",
+        }
+
+        data = {
+            "email": request.user.email,
+            "amount": payment.amount_value(),  # Amount in kobo
+            "reference": payment.reference,
+            "callback_url": request.build_absolute_uri(
+                reverse("ecommerce:verify_payment", args=[payment.reference]),
+            ),
+        }
+
+        response = requests.post(
+            "https://api.paystack.co/transaction/initialize",
+            headers=headers,
+            json=data,
+        )
+        response_data = response.json()
+
+        if response_data.get("status") is True:  # Ensure the status is True
+            authorization_url = response_data["data"]["authorization_url"]
+            # Redirect to the authorization URL or handle it accordingly
+            return redirect(authorization_url)
+        else:
+            print(f"Paystack initialization error: {response_data}")
+            messages.error(
+                request,
+                f"""
+                Error initializing payment:
+                {response_data.get("message", "Unknown error")}
+                """,
+            )
+            return redirect("ecommerce:checkout")
+
+
+class VerifyPaymentView(LoginRequiredMixin, View):
+    def get(self, request, reference, *args, **kwargs):
+        payment = get_object_or_404(Payment, reference=reference)
+        verified = payment.verify_payment()
+        if verified:
+            # Send an email with the link to the purchased products page
+            purchased_product_url = request.build_absolute_uri(
+                reverse("ecommerce:purchased_products"),
+            )
+            send_mail(
+                "Your Purchase is Complete",
+                f"""
+                    Thank you for your purchase.
+                    You can access your purchased products here: {purchased_product_url}
+                """,
+                # Update this if you set DEFAULT_FROM_EMAIL in settings
+                f"from {settings.DEFAULT_FROM_EMAIL}",
+                [request.user.email],
+                fail_silently=False,
+            )
+            messages.success(
+                request,
+                """
+                    Verification successful.
+                    check your mail to access the products you purchase
+                """,
+            )
+            return redirect("ecommerce:payment_complete")
+        else:
+            messages.error(request, "Verification failed")
+            return redirect("ecommerce:payment_failed")
+
+
+class PaymentCompleteView(LoginRequiredMixin, TemplateView):
+    template_name = "pages/ecommerce/payment_complete.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cart_total_amount = Decimal("0.00")
+
+        cart_data_obj = self.request.session.get("cart_data_obj", {})
+
+        if cart_data_obj:
+            for item in cart_data_obj.values():
+                cart_total_amount += int(item["quantity"]) * Decimal(item["price"])
+
+        context["cart_data"] = cart_data_obj
+        context["totalcartitems"] = len(cart_data_obj)
+        context["cart_total_amount"] = cart_total_amount
+
+        # Clear the session cart data
+        if "cart_data_obj" in self.request.session:
+            del self.request.session["cart_data_obj"]
+
+        return context
+
+
+class PaymentFailedView(LoginRequiredMixin, TemplateView):
+    template_name = "pages/ecommerce/payment_failed.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cart_data_obj = self.request.session.get("cart_data_obj", {})
+        context["cart_data"] = cart_data_obj
+        context["totalcartitems"] = len(cart_data_obj)
+        return context
+
+
+class PurchasedProductsView(LoginRequiredMixin, ListView):
+    template_name = "pages/ecommerce/purchased_products.html"
+    context_object_name = "purchased_products"
+
+    def get_queryset(self):
+        return Product.objects.filter(
+            id__in=CartOrderItems.objects.filter(
+                order__user=self.request.user,
+                order__paid_status=True,
+            ).values_list("product_id", flat=True),
+        )
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the user has any completed orders
+        if not CartOrder.objects.filter(user=request.user, paid_status=True).exists():
+            messages.warning(request, "You need to make a purchase first.")
+            return redirect("ecommerce:checkout")
+        return super().dispatch(request, *args, **kwargs)
 
 
 class WishlistListView(LoginRequiredMixin, ListView):
@@ -484,26 +737,30 @@ class WishlistListView(LoginRequiredMixin, ListView):
     context_object_name = "wishlists"
 
 
-def add_to_wishlist(request):
-    product_id = request.GET.get("id")
-    product = Product.objects.get(id=product_id)
+class AddToWishlistView(View):
+    def get(self, request, *args, **kwargs):
+        product_id = request.GET.get("id")
+        product = get_object_or_404(Product, id=product_id)
 
-    context = {}
+        context = {}
 
-    wishlist_count = WishList.objects.filter(product=product, user=request.user).count()
-    print(wishlist_count)
-
-    if wishlist_count > 0:
-        context = {
-            "bool": True,
-        }
-    else:
-        new_wishlist = WishList.objects.create(
+        wishlist_count = WishList.objects.filter(
             product=product,
             user=request.user,
-        )
-        context = {
-            "bool": True,
-        }
+        ).count()
+        print(wishlist_count)
 
-    return JsonResponse(context)
+        if wishlist_count > 0:
+            context = {
+                "bool": True,
+            }
+        else:
+            WishList.objects.create(
+                product=product,
+                user=request.user,
+            )
+            context = {
+                "bool": True,
+            }
+
+        return JsonResponse(context)
