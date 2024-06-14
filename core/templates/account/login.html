@@ -17,12 +17,32 @@
                 Don't have an account? <a href="{% url 'account_signup' %}">Sign up</a>
               </p>
               <form method="post" action="{% url 'account_login' %}">
-                {% if form.errors %}<div class="alert alert-danger" role="alert">{{ form.errors }}</div>{% endif %}
+                {% if form.errors %}
+<div class="alert alert-danger" role="alert">
+  <ul class="mb-0">
+    {% for field, errors in form.errors.items %}
+    <li>
+      {% if field == '__all__' %}
+        <strong>Form error:</strong>
+      {% else %}
+        <strong>{{ field|capfirst }}:</strong>
+      {% endif %}
+      <ul class="mb-0">
+        {% for error in errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
                 {% csrf_token %}
                 <div class="row">
                   <div class="col-sm-12 mt-30">{{ form.as_p }}</div>
                   <div class="col-sm-12 mt-40">
-                    <button class="btn-common" type="submit">Sign inn</button>
+                    <button class="btn-common" type="submit">Sign in</button>
                   </div>
                 </div>
               </form>

@@ -70,7 +70,7 @@ class BaseModel(UIDTimeBasedModel):
 
 
 class ImageTitleTimeBaseModels(TitleTimeBasedModel):
-    # image = ResizedImageField(upload_to=MediaHelper.get_image_upload_path)
+    # Using CloudinaryField for image upload
     image = CloudinaryField("image", default="", blank=True)
 
     class Meta(auto_prefetch.Model.Meta):
@@ -78,7 +78,8 @@ class ImageTitleTimeBaseModels(TitleTimeBasedModel):
 
     def save(self, *args, **kwargs):
         if self.image and not str(self.image).startswith("http"):
-            upload_path = MediaHelper.get_image_upload_path(self, self.image.name)
-            upload_result = cloudinary.uploader.upload(self.image, folder=upload_path)
-            self.image = upload_result["public_id"]
+            if hasattr(self.image, 'file'):
+                upload_path = MediaHelper.get_image_upload_path(self, self.image.file.name)
+                upload_result = cloudinary.uploader.upload(self.image.file, folder=upload_path)
+                self.image = upload_result["public_id"]
         super(ImageTitleTimeBaseModels, self).save(*args, **kwargs)

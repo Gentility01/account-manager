@@ -17,6 +17,7 @@
   <meta name="referrer" content="no-referrer-when-downgrade">
   <link rel="manifest" href="" />
   <link rel="apple-touch-icon" href="{% static 'assets/images/logos/logoicon.png' %}" />
+  <link rel="icon" href="{% static 'assets/images/logos/logoicon.png' %}" type="image/png">
   <!-- Place logoicon.ico in the root directory -->
   {% block css %}
   <!-- bootstrap v4.0.0 -->
@@ -251,27 +252,12 @@
                   <h4>Find It Fast</h4>
                   <div class="footer-menu">
                     <ul>
-                      <li>
-                        <a href="#">Laptop $ Computers</a>
-                      </li>
-                      <li>
-                        <a href="#">Smart Phone & Tablets</a>
-                      </li>
-                      <li>
-                        <a href="#">TV & Audio</a>
-                      </li>
-                      <li>
-                        <a href="#">Cameras & Photography</a>
-                      </li>
-                      <li>
-                        <a href="#">Gadgets</a>
-                      </li>
-                      <li>
-                        <a href="#">Car Electronic & GP5</a>
-                      </li>
-                      <li>
-                        <a href="#">Accesories</a>
-                      </li>
+                      {% for categories in top_categories %}
+                        <li>
+                          <a href="#">{{ categories.title|title}}</a>
+                        </li>
+                      {% endfor %}
+                      
                     </ul>
                   </div>
                 </div>

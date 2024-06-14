@@ -67,8 +67,8 @@
             <img src="{% static 'assets/images/icons/bank-loan2.jpg' %}" alt="" />
           </div>
           <div class="support-text">
-            <strong>Free Delivery</strong>
-            <p>For all order over 99$</p>
+            <strong>Sucure Payment</strong>
+            <p>100 % Secure Payment</p>
           </div>
         </div>
       </div>
@@ -78,8 +78,8 @@
             <img src="{% static 'assets/images/icons/bank-liquidity2.jpg' %}" alt="" />
           </div>
           <div class="support-text">
-            <strong>30 Days Return</strong>
-            <p>If goods have Problem</p>
+            <strong>Instant Access</strong>
+            <p>Get immediate access to your digital products after purchase</p>
           </div>
         </div>
       </div>
@@ -89,8 +89,8 @@
             <img src="{% static 'assets/images/icons/bank-credit-card2.jpg' %}" alt="" />
           </div>
           <div class="support-text">
-            <strong>Secure Payment</strong>
-            <p>100% secure payment</p>
+            <strong>Lifetime Access</strong>
+            <p>Enjoy lifetime access to your purchased digital products</p>
           </div>
         </div>
       </div>
@@ -118,33 +118,27 @@
           <!--product-deal-->
           <div class="sidebar-single">
             <div class="section-title">
-              <h3>Deal off the week</h3>
+              <h3>Deal of the week</h3>
             </div>
             <div class="row product-deals">
               <!--single-deal-->
+
+              {% if deal_product %}
               <div class="col-lg-12">
                 <div class="product-single product-deal">
                   <div class="product-title">
-                    <small><a href="#">Camera</a></small>
-                    <h4>
-                      <a href="#">Blue Yeti USB Microphone Blackout Edition</a>
-                    </h4>
+                    <small><a href="#">{{ deal_product.category }}</a></small>
+                    <h4><a href="#">{{ deal_product.title }}</a></h4>
                   </div>
                   <div class="product-thumb">
-                    <a href="#">
-                      <img src="{% static 'assets/images/products/deals/1.jpg' %}" alt="" />
-                    </a>
-                    <div class="downsale">
-                      <span>-</span>$25
-                    </div>
+                    <a href="#"><img src="{{ deal_product.image.url }}" alt="{{ deal_product.title }}" /></a>
+                    <div class="downsale"><span>-</span>${{ deal_product.get_discount_price }}</div>
                     <div class="product-quick-view">
-                      <a href="javascript:void(0);" data-toggle="modal" data-target="#quick-view">detail view</a>
+                      <a href="{% url 'homeapp:product_detail' deal_product.pk %}">Details</a>
                     </div>
                   </div>
                   <div class="product-price-rating">
-                    <div class="pull-left">
-                      <span>$195.00</span>
-                    </div>
+                    <div class="pull-left"><span>${{ deal_product.price }}</span></div>
                     <div class="pull-right">
                       <i class="fa fa-star-o"></i>
                       <i class="fa fa-star-o"></i>
@@ -162,18 +156,21 @@
                     <span>Available: <span>35</span></span>
                   </div>
                   <div class="product-countdown">
-                    <div data-countdown="2010/08/01"></div>
+                    <div id="countdown" data-countdown-end="{{ deal_product.deal_end_date|date:'Y-m-d H:i:s' }}"></div>
                   </div>
                 </div>
               </div>
+              {% endif %}
+
+
             </div>
           </div>
           <!--product-ad-->
-          <div class="sidebar-single mt-30 d-none d-xl-block">
+          {% comment %} <div class="sidebar-single mt-30 d-none d-xl-block">
             <a href="#">
               <img src="{% static 'assets/images/ad/1.jpg' %}" alt="" />
             </a>
-          </div>
+          </div> {% endcomment %}
         </div>
       </div>
       <div class="col-lg-9 mt-sm-35">
@@ -207,13 +204,13 @@
                     </div>
                     <div class="product-thumb">
                       <a href="#">
-                        <img src="{{ arrived.image.url }}" alt="" />
+                        <img style="height:200px" src="{{ arrived.image.url }}" alt="" />
                       </a>
                       <div class="downsale">
                         <span>-</span>${{ arrived.get_discount_price }}
                       </div>
                       <div class="product-quick-view">
-                        <a href="{% url 'homeapp:product_detail' arrived.pk %}">detail view</a>
+                        <a href="{% url 'homeapp:product_detail' arrived.pk %}">Details</a>
                       </div>
                     </div>
                     <div class="product-price-rating">
@@ -232,22 +229,22 @@
                     </div>
                   </div>
                   <!--single-product-->
-                  {% comment %} {% for arrived_product in just_arrived|slice:":1" %}
+                  {% comment %} {% for arrived2 in just_arrived2|slice:":2" %}
                   <div class="product-single">
                     <div class="product-title">
-                      <small><a href="#">{{ arrived.category.title}}</a></small>
-                      <h4><a href="#">{{ arrived.title}}</a></h4>
+                      <small><a href="#">{{ arrived2.category.title}}</a></small>
+                      <h4><a href="#">{{ arrived2.title}}</a></h4>
                     </div>
                     <div class="product-thumb">
-                      <a href="#"><img src="{{ arrived.image.url }}" alt="" /></a>
-                      <div class="downsale"><span>-</span>${{ arrived.get_pecentage }}</div>
+                      <a href="#"><img src="{{ arrived2.image.url }}" alt="" /></a>
+                      <div class="downsale"><span>-</span>${{ arrived2.get_pecentage }}</div>
                       <div class="product-quick-view">
-                        <a href="javascript:void(0);" data-toggle="modal" data-target="#quick-view">detail view</a>
+                        <a href="javascript:void(0);" data-toggle="modal" data-target="#quick-view">Details</a>
                       </div>
                     </div>
                     <div class="product-price-rating">
-                      <span>${{ arrived.price}}</span>
-                      <del>${{ arrived.oldprice}}</del>
+                      <span>${{ deal_product.price}}</span>
+                      <del>${{ deal_product.oldprice}}</del>
                     </div>
                     <div class="product-action">
                       <a href="javascript:void(0);" class="product-compare"><i class="ti-control-shuffle"></i></a>
@@ -256,6 +253,7 @@
                     </div>
                   </div>
                   {% endfor %} {% endcomment %}
+
                 </div>
                 {% endfor %}
               </div>
@@ -268,19 +266,17 @@
                   <div class="product-single">
                     <div class="product-title">
                       <small><a href="#">{{ on_sale.category.title }}</a></small>
-                      <h4>
-                        <a href="#">{{ on_sale.title }}</a>
-                      </h4>
+                      <h4><a href="#">{{ on_sale.title }}</a></h4>
                     </div>
                     <div class="product-thumb">
                       <a href="#">
-                        <img src="{{ on_sale.image.url }}" alt="" />
+                        <img style="height:200px" src="{{ on_sale.image.url }}" alt="" />
                       </a>
                       <div class="downsale">
                         <span>-</span>${{ on_sale.get_discount_price }}
                       </div>
                       <div class="product-quick-view">
-                        <a href="{% url 'homeapp:product_detail' on_sale.pk %}">detail view</a>
+                        <a href="{% url 'homeapp:product_detail' on_sale.pk %}">Details</a>
                       </div>
                     </div>
                     <div class="product-price-rating">
@@ -295,34 +291,50 @@
                       <a class="add-to-cart add-to-cart-btn" id="add-to-cart-btn" data-index="{{ on_sale.id }}">Add to
                         Cart</a>
                       <a href="javascript:void(0);" class="product-wishlist add-to-wishlist"
-                        data-product-item={{on_sale.id}}><i class="ti-heart"></i></a>
+                        data-product-item="{{on_sale.id}}"><i class="ti-heart"></i></a>
                     </div>
                   </div>
                   <!--single-product-->
-                  {% comment %} <div class="product-single">
+                </div>
+
+                {% comment %} <div class="col-lg-4">
+                  <!--single-product-->
+                  <div class="product-single">
                     <div class="product-title">
-                      <small><a href="#">Camera</a></small>
-                      <h4><a href="#">Blue Yeti USB Microphone Blackout Edition</a></h4>
+                      <small><a href="#">{{ on_sale.category.title }}</a></small>
+                      <h4><a href="#">{{ on_sale.title }}</a></h4>
                     </div>
                     <div class="product-thumb">
-                      <a href="#"><img src="{% static 'assets/images/products/shop/2.jpg' %}" alt="" /></a>
-                      <div class="downsale"><span>-</span>$35</div>
+                      <a href="#">
+                        <img src="{{ on_sale.image.url }}" alt="" />
+                      </a>
+                      <div class="downsale">
+                        <span>-</span>${{ on_sale.get_discount_price }}
+                      </div>
                       <div class="product-quick-view">
-                        <a href="javascript:void(0);" data-toggle="modal" data-target="#quick-view">detail view</a>
+                        <a href="{% url 'homeapp:product_detail' on_sale.pk %}">Details</a>
                       </div>
                     </div>
                     <div class="product-price-rating">
-                      <span>$195.00</span>
-                      <del>$229.99</del>
+                      <span>$</span><span id="product-price-{{ on_sale.id }}">{{ on_sale.price }}</span>
+                      <del>${{ on_sale.oldprice }}</del>
                     </div>
                     <div class="product-action">
-                      <a href="javascript:void(0);" class="product-compare"><i class="ti-control-shuffle"></i></a>
-                      <a href="javascript:void(0);" class="add-to-cart">Add to Cart</a>
-                      <a href="javascript:void(0);" class="product-wishlist"><i class="ti-heart"></i></a>
+                      <input type="hidden" value="1" id="product-quantity" class="product-quantity-{{ on_sale.id }}" />
+                      <input type="hidden" class="product-pid-{{ on_sale.id }}" value="{{ on_sale.id }}" />
+                      <input type="hidden" class="product-image-{{ on_sale.id }}" value="{{ on_sale.image.url }}" />
+                      <input type="hidden" class="product-title-{{ on_sale.id }}" value="{{ on_sale.title }}" />
+                      <a class="add-to-cart add-to-cart-btn" id="add-to-cart-btn" data-index="{{ on_sale.id }}">Add to
+                        Cart</a>
+                      <a href="javascript:void(0);" class="product-wishlist add-to-wishlist"
+                        data-product-item="{{on_sale.id}}"><i class="ti-heart"></i></a>
                     </div>
-                  </div> {% endcomment %}
-                </div>
+                  </div>
+                  <!--single-product-->
+                </div> {% endcomment %}
+
                 {% endfor %}
+
               </div>
             </div>
             <div id="best-rated" class="tab-pane">
@@ -338,12 +350,12 @@
                       </h4>
                     </div>
                     <div class="product-thumb">
-                      <img src="{{ feature.image.url }}" alt="" />
+                      <img style="height:200px" src="{{ feature.image.url }}" alt="" />
                       <div class="downsale">
                         <span>-</span>${{ feature.get_discount_price }}
                       </div>
                       <div class="product-quick-view">
-                        <a href="{% url 'homeapp:product_detail' feature.pk %}">detail view</a>
+                        <a href="{% url 'homeapp:product_detail' feature.pk %}">Details</a>
                       </div>
                     </div>
                     <div class="product-price-rating">
@@ -377,7 +389,7 @@
                         <span>-</span>$35
                       </div>
                       <div class="product-quick-view">
-                        <a href="javascript:void(0);" data-toggle="modal" data-target="#quick-view">detail view</a>
+                        <a href="javascript:void(0);" data-toggle="modal" data-target="#quick-view">Details</a>
                       </div>
                     </div>
                     <div class="product-price-rating">
@@ -466,13 +478,13 @@
               </div>
               <div class="product-thumb">
                 <a href="#">
-                  <img src="{{ product.image.url }}" alt="" />
+                  <img style="height:200px" src="{{ product.image.url }}" alt="" />
                 </a>
                 <div class="downsale">
                   <span>-</span>${{ product.get_discount_price }}
                 </div>
                 <div class="product-quick-view">
-                  <a href="{% url 'homeapp:product_detail' product.pk %}">detail view</a>
+                  <a href="{% url 'homeapp:product_detail' product.pk %}">Details</a>
                 </div>
               </div>
               <div class="product-price-rating">
@@ -512,7 +524,7 @@
                   <span>-</span>$35
                 </div>
                 <div class="product-quick-view">
-                  <a href="javascript:void(0);" data-toggle="modal" data-target="#quick-view">detail view</a>
+                  <a href="javascript:void(0);" data-toggle="modal" data-target="#quick-view">Details</a>
                 </div>
               </div>
               <div class="product-price-rating">
@@ -533,7 +545,7 @@
 </div>
 <!--products-tab end-->
 <!--banner-area-start-->
-<div class="banner-area mt-10">
+{% comment %} <div class="banner-area mt-10">
   <div class="container">
     <div class="row">
       <div class="col-lg-6">
@@ -572,7 +584,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> {% endcomment %}
 <!--banner-area-end-->
 <!--recently-viewed-products-start-->
 {% comment %} <div class="recent-viewed-products mt-40">

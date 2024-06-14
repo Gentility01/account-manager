@@ -35,6 +35,10 @@ class ProductAdmin(admin.ModelAdmin):
         "just_arrived",
         "featured",
         "special_offer",
+        "deal_of_the_week",
+        "deal_start_date",
+        "deal_end_date",
+
     ]
 
 

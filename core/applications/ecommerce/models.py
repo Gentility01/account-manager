@@ -15,10 +15,11 @@ from django.db.models import FileField
 from django.db.models import IntegerField
 from django.db.models import JSONField
 from django.db.models import SlugField
-from django.db.models import TextField
+from django.db.models import TextField, DateTimeField
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from taggit.managers import TaggableManager
+from django.utils import timezone
 
 from core.utils.choices import ProductStatus
 from core.utils.choices import Rating
@@ -119,6 +120,9 @@ class Product(TitleandUIDTimeBasedModel, ImageTitleTimeBaseModels):
     best_seller = BooleanField(default=False)
     special_offer = BooleanField(default=False)
     just_arrived = BooleanField(default=True)
+    deal_of_the_week = BooleanField(default=False)
+    deal_start_date = DateTimeField(null=True, blank=True)
+    deal_end_date = DateTimeField(null=True, blank=True)
     resource = FileField(
         upload_to=MediaHelper.get_file_upload_path,
         blank=True,
@@ -141,6 +145,11 @@ class Product(TitleandUIDTimeBasedModel, ImageTitleTimeBaseModels):
     def get_discount_price(self):
         if self.oldprice > 0:
             return self.oldprice - self.price
+        
+    def get_deal_price(self):
+        if self.deal_of_the_week and self.deal_start_date <= timezone.now() <= self.deal_end_date:
+             return self.price * (1 - self.discount_percentage / 100)
+        return self.price
 
     def __str__(self):
         return self.title

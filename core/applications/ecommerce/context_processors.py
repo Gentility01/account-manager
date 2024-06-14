@@ -8,6 +8,8 @@ from core.applications.ecommerce.models import Category
 from core.applications.ecommerce.models import Product
 from core.applications.ecommerce.models import WishList
 
+from django.utils import timezone
+
 
 def product_list(request):
     """
@@ -27,6 +29,7 @@ def product_list(request):
     just_arrived = products.filter(just_arrived=True)
     just_arrived2 = products.filter(just_arrived=True).order_by("-id")
     categories = Category.objects.all().order_by("-id")
+    deal_product  = products.filter(deal_of_the_week=True, deal_start_date__lte=timezone.now(), deal_end_date__gte=timezone.now()).first()
 
     min_max_price = Product.objects.aggregate(Min("price"), Max("price"))
 
@@ -52,6 +55,7 @@ def product_list(request):
         "blog_posts": blog_posts,
         "banners": banners,
         "wishlist": wishlist,
+        "deal_product":deal_product,
     }
 
 
