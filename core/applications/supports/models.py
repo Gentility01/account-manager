@@ -1,8 +1,6 @@
 import auto_prefetch
 from django.conf import settings
-from django.db.models import SET_NULL
-from django.db.models import CharField
-from django.db.models import TextField
+from django.db.models import SET_NULL, CharField, TextField
 
 from core.utils.choices import Ticket
 from core.utils.models import TitleTimeBasedModel

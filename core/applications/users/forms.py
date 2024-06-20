@@ -2,22 +2,15 @@ from allauth.account.forms import SignupForm
 from allauth.socialaccount.forms import SignupForm as SocialSignupForm
 from django.contrib.auth import forms as admin_forms
 from django.core.exceptions import ValidationError
-from django.forms import CharField
-from django.forms import EmailField
+from django.forms import CharField, EmailField
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 
-from .models import Accountant
-from .models import Administrator
-from .models import AffiliatePartner
-from .models import ContentManager
-from .models import CustomerSupportRepresentative
-from .models import DigitalGoodsDistribution
-from .models import HelpDeskTechnicalSupport
-from .models import LiveChatSupport
-from .models import MarketingAndSales
-from .models import User
+from .models import (Accountant, Administrator, AffiliatePartner,
+                     ContentManager, CustomerSupportRepresentative,
+                     DigitalGoodsDistribution, HelpDeskTechnicalSupport,
+                     LiveChatSupport, MarketingAndSales, User)
 
 
 class UserAdminChangeForm(admin_forms.UserChangeForm):

@@ -115,4 +115,13 @@ urlpatterns = [
         views.PurchasedProductsView.as_view(),
         name="purchased_products",
     ),
+    path(
+        "create-payment/<int:order_id>/",
+          views.CreateNowPaymentViews.as_view(),
+            name="create_nowpayment"
+    ),
+    path(
+        "payment-callback/",
+        views.PaymentCallbackView.as_view(), name="payment-callback"
+    ),
 ]

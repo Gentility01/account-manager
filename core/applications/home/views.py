@@ -5,19 +5,13 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.generic import DetailView
-from django.views.generic import ListView
-from django.views.generic import TemplateView
-from django.views.generic import View
+from django.views.generic import DetailView, ListView, TemplateView, View
 
 from core.applications.blog.models import Announcement
 from core.applications.ecommerce.forms import ProductReviewForm
-from core.applications.ecommerce.models import CartOrder
-from core.applications.ecommerce.models import CartOrderItems
-from core.applications.ecommerce.models import Category
-from core.applications.ecommerce.models import Product
-from core.applications.ecommerce.models import ProductImages
-from core.applications.ecommerce.models import ProductReview
+from core.applications.ecommerce.models import (CartOrder, CartOrderItems,
+                                                Category, Product,
+                                                ProductImages, ProductReview)
 
 # Create your views here.
 

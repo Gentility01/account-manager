@@ -1,15 +1,10 @@
 from django.contrib import admin
 
-from core.applications.ecommerce.models import Address
-from core.applications.ecommerce.models import CartOrder
-from core.applications.ecommerce.models import CartOrderItems
-from core.applications.ecommerce.models import Category
-from core.applications.ecommerce.models import Payment
-from core.applications.ecommerce.models import Product
-from core.applications.ecommerce.models import ProductImages
-from core.applications.ecommerce.models import ProductReview
-from core.applications.ecommerce.models import Tags
-from core.applications.ecommerce.models import WishList
+from core.applications.ecommerce.models import (Address, CartOrder,
+                                                CartOrderItems, Category,
+                                                Payment, Product,
+                                                ProductImages, ProductReview,
+                                                Tags, WishList)
 
 
 class ProductImagesAdmin(admin.TabularInline):

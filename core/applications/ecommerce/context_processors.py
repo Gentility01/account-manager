@@ -1,14 +1,8 @@
-from django.db.models import Max
-from django.db.models import Min
-
-from core.applications.blog.models import Banner
-from core.applications.blog.models import BlogCategory
-from core.applications.blog.models import Post
-from core.applications.ecommerce.models import Category
-from core.applications.ecommerce.models import Product
-from core.applications.ecommerce.models import WishList
-
+from django.db.models import Max, Min
 from django.utils import timezone
+
+from core.applications.blog.models import Banner, BlogCategory, Post
+from core.applications.ecommerce.models import Category, Product, WishList
 
 
 def product_list(request):

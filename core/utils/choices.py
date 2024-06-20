@@ -1,5 +1,4 @@
-from django.db.models import IntegerChoices
-from django.db.models import TextChoices
+from django.db.models import IntegerChoices, TextChoices
 
 
 class ProductStatus(TextChoices):

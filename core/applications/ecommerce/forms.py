@@ -1,21 +1,12 @@
 from ckeditor.widgets import CKEditorWidget
-from django.forms import CharField
-from django.forms import CheckboxInput
-from django.forms import ChoiceField
-from django.forms import FileInput
-from django.forms import ModelForm
-from django.forms import NumberInput
-from django.forms import Select
-from django.forms import Textarea
-from django.forms import TextInput
+from django.forms import (CharField, CheckboxInput, ChoiceField, FileInput,
+                          ModelForm, NumberInput, Select, Textarea, TextInput)
 from multiupload.fields import MultiFileField
 from taggit.forms import TagField
 
-from core.applications.ecommerce.models import Category
-from core.applications.ecommerce.models import Product
-from core.applications.ecommerce.models import ProductImages
-from core.applications.ecommerce.models import ProductReview
-from core.applications.ecommerce.models import Tags
+from core.applications.ecommerce.models import (Category, Product,
+                                                ProductImages, ProductReview,
+                                                Tags)
 from core.utils.choices import Rating
 
 

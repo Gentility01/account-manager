@@ -1,14 +1,13 @@
 from django.urls import path
 
-from core.applications.users.views import accountant_account
-from core.applications.users.views import administrator_account
-from core.applications.users.views import content_manager_account
-from core.applications.users.views import customer_support_reps
-from core.applications.users.views import customers_account
-from core.applications.users.views import dashboard_view
-from core.applications.users.views import user_detail_view
-from core.applications.users.views import user_redirect_view
-from core.applications.users.views import user_update_view
+from core.applications.users.views import (accountant_account,
+                                           administrator_account,
+                                           content_manager_account,
+                                           customer_support_reps,
+                                           customers_account, dashboard_view,
+                                           user_detail_view,
+                                           user_redirect_view,
+                                           user_update_view)
 
 app_name = "users"
 urlpatterns = [

@@ -27,14 +27,24 @@ repos:
         args: ['--target-version', '4.2']
 
   # Run the Ruff linter.
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.3
+  # - repo: https://github.com/astral-sh/ruff-pre-commit
+  #   rev: v0.4.3
+  #   hooks:
+  #     # Linter
+  #     - id: ruff
+  #       args: [--fix, --exit-non-zero-on-fix]
+  #     # Formatter
+  #     - id: ruff-format
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: 6.0.0
     hooks:
-      # Linter
-      - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
-      # Formatter
-      - id: ruff-format
+      - id: flake8
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
 
   # - repo: https://github.com/Riverside-Healthcare/djLint
   #   rev: v1.34.1

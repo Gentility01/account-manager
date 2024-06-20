@@ -1,8 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden
 
-from core.applications.users.models import ContentManager
-from core.applications.users.models import CustomerSupportRepresentative
+from core.applications.users.models import (ContentManager,
+                                            CustomerSupportRepresentative)
 
 
 class ContentManagerRequiredMixin(LoginRequiredMixin):

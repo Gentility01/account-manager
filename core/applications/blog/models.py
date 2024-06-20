@@ -1,17 +1,12 @@
 import auto_prefetch
 from ckeditor_uploader.fields import RichTextUploadingField
-from django.db.models import CASCADE
-from django.db.models import SET_NULL
-from django.db.models import BooleanField
-from django.db.models import CharField
-from django.db.models import DecimalField
-from django.db.models import SlugField
+from django.db.models import (CASCADE, SET_NULL, BooleanField, CharField,
+                              DecimalField, SlugField)
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from taggit.managers import TaggableManager
 
-from core.utils.models import ImageTitleTimeBaseModels
-from core.utils.models import TitleTimeBasedModel
+from core.utils.models import ImageTitleTimeBaseModels, TitleTimeBasedModel
 
 # Create your models here.
 

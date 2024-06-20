@@ -1,13 +1,7 @@
 from ckeditor.widgets import CKEditorWidget
-from django.forms import FileInput
-from django.forms import ModelForm
-from django.forms import NumberInput
-from django.forms import Select
-from django.forms import TextInput
+from django.forms import FileInput, ModelForm, NumberInput, Select, TextInput
 
-from core.applications.blog.models import Banner
-from core.applications.blog.models import BlogCategory
-from core.applications.blog.models import Post
+from core.applications.blog.models import Banner, BlogCategory, Post
 
 
 class BlogCategoryForm(ModelForm):

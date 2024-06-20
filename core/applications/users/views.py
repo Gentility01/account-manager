@@ -7,20 +7,15 @@ from django.db import DatabaseError
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView
-from django.views.generic import RedirectView
-from django.views.generic import TemplateView
-from django.views.generic import UpdateView
+from django.views.generic import (DetailView, RedirectView, TemplateView,
+                                  UpdateView)
 
 from core.applications.ecommerce.models import CartOrder
 from core.applications.users.forms import CustomSignupForm
-from core.applications.users.models import Account
-from core.applications.users.models import Accountant
-from core.applications.users.models import Administrator
-from core.applications.users.models import ContentManager
-from core.applications.users.models import Customer
-from core.applications.users.models import CustomerSupportRepresentative
-from core.applications.users.models import User
+from core.applications.users.models import (Account, Accountant, Administrator,
+                                            ContentManager, Customer,
+                                            CustomerSupportRepresentative,
+                                            User)
 
 
 class CustomSignupView(SignupView):

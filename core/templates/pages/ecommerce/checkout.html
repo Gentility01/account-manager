@@ -171,7 +171,7 @@
               <tbody>
                 {% for product_id, item in cart_data.items %}
                 <tr>
-                  <td><img height="35" src="{{ item.image }}" alt="" />{{ item.title|truncatechars:15}}</td>
+                  <td><img height="35" src="{{ item.image }}" alt="" />{{ item.title|truncatechars:15}} </td>
                   <td><strong>${% widthratio item.price 1 item.quantity %}</strong></td>
                 </tr>
                 {% endfor %}
@@ -236,8 +236,17 @@
                 <div class="place-order text-center mt-60">
                   <a href="{% url 'ecommerce:proceed_payment' %}" type="submit" class="btn-common width-180">Proceed To
                     Payment</a>
+
                 </div>
-              {% comment %} </form> {% endcomment %}
+
+                <div class="place-order text-center mt-1">
+                    <form action="{% url 'ecommerce:create_nowpayment' order_id=order_id  %}" method="get">
+                      <button type="submit" class="btn-common width-180">Pay with Coin</button>
+                    </form>
+
+                </div>
+                {% comment %} </form> {% endcomment %}
+
           </div>
         </div>
       </div>
@@ -301,21 +310,22 @@
 
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
-function makePaystackPayment() {
+  function makePaystackPayment() {
     let ref = "{{ payment.reference }}";
     let obj = {
-        key: "{{ paystack_public_key }}",
-        email: "{{ user_email }}",
-        amount: "{{ payment.amount_value }}",
-        ref: ref,
-        onClose: function(){
-            alert('Window closed.');
-        }
+      key: "{{ paystack_public_key }}",
+      email: "{{ user_email }}",
+      amount: "{{ payment.amount_value }}",
+      ref: ref,
+      onClose: function () {
+        alert('Window closed.');
+      }
     };
 
     var handler = PaystackPop.setup(obj);
     handler.openIframe();
-}
+  }
+
 </script>
 
 

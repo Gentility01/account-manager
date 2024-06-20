@@ -1,9 +1,7 @@
 from django.contrib import admin
 
-from core.applications.blog.models import Announcement
-from core.applications.blog.models import Banner
-from core.applications.blog.models import BlogCategory
-from core.applications.blog.models import Post
+from core.applications.blog.models import (Announcement, Banner, BlogCategory,
+                                           Post)
 
 # Register your models here.
 

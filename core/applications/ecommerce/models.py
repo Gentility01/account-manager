@@ -6,29 +6,18 @@ from ckeditor_uploader.fields import RichTextUploadingField
 from django.conf import settings
 from django.contrib.auth.models import Permission
 from django.core.validators import MinValueValidator
-from django.db.models import CASCADE
-from django.db.models import SET_NULL
-from django.db.models import BooleanField
-from django.db.models import CharField
-from django.db.models import DecimalField
-from django.db.models import FileField
-from django.db.models import IntegerField
-from django.db.models import JSONField
-from django.db.models import SlugField
-from django.db.models import TextField, DateTimeField
+from django.db.models import (CASCADE, SET_NULL, BooleanField, CharField,
+                              DateTimeField, DecimalField, FileField,
+                              IntegerField, JSONField, SlugField, TextField)
+from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from taggit.managers import TaggableManager
-from django.utils import timezone
 
-from core.utils.choices import ProductStatus
-from core.utils.choices import Rating
-from core.utils.choices import Status
+from core.utils.choices import ProductStatus, Rating, Status
 from core.utils.media import MediaHelper
-from core.utils.models import ImageTitleTimeBaseModels
-from core.utils.models import TimeBasedModel
-from core.utils.models import TitleandUIDTimeBasedModel
-from core.utils.models import TitleTimeBasedModel
+from core.utils.models import (ImageTitleTimeBaseModels, TimeBasedModel,
+                               TitleandUIDTimeBasedModel, TitleTimeBasedModel)
 from core.utils.payments import PayStack
 
 # Create your models here.
@@ -145,7 +134,7 @@ class Product(TitleandUIDTimeBasedModel, ImageTitleTimeBaseModels):
     def get_discount_price(self):
         if self.oldprice > 0:
             return self.oldprice - self.price
-        
+
     def get_deal_price(self):
         if self.deal_of_the_week and self.deal_start_date <= timezone.now() <= self.deal_end_date:
              return self.price * (1 - self.discount_percentage / 100)

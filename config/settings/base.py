@@ -63,6 +63,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
+    "jazzmin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -74,6 +75,7 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
+
     "crispy_forms",
     "crispy_bootstrap5",
     "allauth",
@@ -85,6 +87,7 @@ THIRD_PARTY_APPS = [
     "django_countries",
     "taggit",
     "cloudinary",
+
 ]
 
 LOCAL_APPS = [
@@ -128,9 +131,7 @@ PASSWORD_HASHERS = [
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
@@ -235,7 +236,7 @@ EMAIL_BACKEND = env(
 # EMAIL_TIMEOUT = 5
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
-EMAIL_USE_TLS = True  
+EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_HOST_USER = "mastergentility5@gmail.com"
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
@@ -337,3 +338,25 @@ cloudinary.config(
 
 PAYSTACK_SECRET_KEY = env("PAYSTACK_SECRET_KEY")
 PAYSTACK_PUBLIC_KEY = env("PAYSTACK_PUBLIC_KEY")
+
+
+# Nowpayment integration
+NOWPAYMENTS_API_KEY = env("NOWPAYMENTS_API_KEY")
+
+
+# Jazmin settings
+JAZZMIN_SETTINGS = {
+    "site_title": "AcctMarket-Admin",
+    "site_header": "AcctMarket-Admin",
+    "site_brand": "AcctMarket-Admin",
+    "site_logo": "assets/images/logos/logoicon.png",
+    "login_logo": "AcctMarket-Admin",
+    "welcome_sign": "Welcome to AcctMarket",
+    "copyright": "AcctMarket ltd",
+    "search_model": "register.CustomUser",
+    "user_avatar": None,
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+    ]
+
+}

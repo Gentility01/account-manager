@@ -1,3 +1,4 @@
+import json
 from decimal import Decimal
 
 import requests
@@ -5,36 +6,24 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
-from django.db.models import Avg
-from django.db.models import Count
+from django.db.models import Avg, Count
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
-from django.urls import reverse
-from django.urls import reverse_lazy
-from django.views.generic import CreateView
-from django.views.generic import DeleteView
-from django.views.generic import FormView
-from django.views.generic import ListView
-from django.views.generic import TemplateView
-from django.views.generic import UpdateView
-from django.views.generic import View
+from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import (CreateView, DeleteView, FormView, ListView,
+                                  TemplateView, UpdateView, View)
 
-from core.applications.ecommerce.forms import CategoryForm
-from core.applications.ecommerce.forms import ProductForm
-from core.applications.ecommerce.forms import ProductImagesForm
-from core.applications.ecommerce.forms import ProductReviewForm
-from core.applications.ecommerce.forms import TagsForm
-from core.applications.ecommerce.models import CartOrder
-from core.applications.ecommerce.models import CartOrderItems
-from core.applications.ecommerce.models import Category
-from core.applications.ecommerce.models import Payment
-from core.applications.ecommerce.models import Product
-from core.applications.ecommerce.models import ProductImages
-from core.applications.ecommerce.models import ProductReview
-from core.applications.ecommerce.models import Tags
-from core.applications.ecommerce.models import WishList
+from core.applications.ecommerce.forms import (CategoryForm, ProductForm,
+                                               ProductImagesForm,
+                                               ProductReviewForm, TagsForm)
+from core.applications.ecommerce.models import (CartOrder, CartOrderItems,
+                                                Category, Payment, Product,
+                                                ProductImages, ProductReview,
+                                                Tags, WishList)
+from core.utils.payments import NowPayment
 from core.utils.views import ContentManagerRequiredMixin
 
 
@@ -738,7 +727,9 @@ class WishlistListView(LoginRequiredMixin, ListView):
 
 
 class AddToWishlistView(View):
+
     def get(self, request, *args, **kwargs):
+
         product_id = request.GET.get("id")
         product = get_object_or_404(Product, id=product_id)
 
@@ -764,3 +755,71 @@ class AddToWishlistView(View):
             }
 
         return JsonResponse(context)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class CreateNowPaymentViews(LoginRequiredMixin, View):
+    def get(self, request, order_id):
+        """
+        Create a new payment for the given order
+        and redirect the user to the payment URL.
+
+        Parameters:
+            request (HttpRequest): The HTTP request object.
+            order_id (int): The ID of the order.
+
+        Returns:
+            HttpResponseRedirect: Redirects the user to the payment URL
+            if the payment is successfully created.
+            HttpResponse: Renders the "payment_error.html"
+            template with an error message if the payment creation fails.
+        """
+        # Fetch the order by ID and ensure it belongs to the logged-in user
+        order = get_object_or_404(CartOrder, id=order_id, user=request.user)
+
+        # Create a new Payment object associated with the order
+        payment = Payment.objects.create(
+            user=request.user,
+            order=order,
+            amount=order.price
+        )
+
+        # Initialize NowPayment instance to create a new payment
+        nowpayment = NowPayment()
+        payment_data = nowpayment.create_payment(
+            amount=float(order.price),  # Convert price to float for the API
+            currency="USD",  # Specify the currency
+            order_id=str(order.id),  # Pass the order ID as a string
+            description=f"Payment for order {order.id}"  # Description of the payment
+        )
+
+        # Check if the payment was successfully created and contains an invoice URL
+        if payment_data.get("invoice_url"):
+            # Save the payment URL to the Payment object and redirect the user
+            payment.payment_url = payment_data["invoice_url"]
+            payment.save()
+            return redirect("payment_complete")  # Redirect to payment complete view
+        else:
+            # Handle the error if payment creation failed
+            return render(request, "payment_error.html", {"error": payment_data.get("message", "Unknown error")})
+
+@method_decorator(csrf_exempt, name="dispatch")
+class PaymentCallbackView(View):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        payment_id = data.get("order_id")
+        payment_status = data.get("payment_status")
+
+        payment = get_object_or_404(Payment, id=payment_id)
+
+        if payment_status == "finished":
+            payment.status = "verified"
+            payment.verified = True
+            payment.save()
+
+            payment.order.paid_status = True
+            payment.order.save()
+
+            return redirect("ecommerce:payment_complete")  # Redirect to payment complete view
+
+        return redirect("ecommerce:payment_failed")  # Redirect to payment failed view

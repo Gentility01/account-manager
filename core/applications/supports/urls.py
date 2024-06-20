@@ -1,12 +1,9 @@
 from django.urls import path
 
-from core.applications.supports.views import CreateFAQ
-from core.applications.supports.views import DeleteFAQViews
-from core.applications.supports.views import EditFAQViews
-from core.applications.supports.views import FAQListView
-from core.applications.supports.views import HELPOrFAQPage
-from core.applications.supports.views import TicketDetailView
-from core.applications.supports.views import TicketListView
+from core.applications.supports.views import (CreateFAQ, DeleteFAQViews,
+                                              EditFAQViews, FAQListView,
+                                              HELPOrFAQPage, TicketDetailView,
+                                              TicketListView)
 
 app_name = "support"
 urlpatterns = [

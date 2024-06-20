@@ -4,20 +4,11 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
 
-from .forms import UserAdminChangeForm
-from .forms import UserAdminCreationForm
-from .models import Account
-from .models import Accountant
-from .models import Administrator
-from .models import AffiliatePartner
-from .models import ContentManager
-from .models import Customer
-from .models import CustomerSupportRepresentative
-from .models import DigitalGoodsDistribution
-from .models import HelpDeskTechnicalSupport
-from .models import LiveChatSupport
-from .models import MarketingAndSales
-from .models import User
+from .forms import UserAdminChangeForm, UserAdminCreationForm
+from .models import (Account, Accountant, Administrator, AffiliatePartner,
+                     ContentManager, Customer, CustomerSupportRepresentative,
+                     DigitalGoodsDistribution, HelpDeskTechnicalSupport,
+                     LiveChatSupport, MarketingAndSales, User)
 
 if settings.DJANGO_ADMIN_FORCE_ALLAUTH:
     # Force the `admin` sign in process to go through the `django-allauth` workflow:

@@ -355,5 +355,3 @@ function countdownTimer(endTime, element) {
         }
     }, 1000);
 }
-
-

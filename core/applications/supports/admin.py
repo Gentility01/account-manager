@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from core.applications.supports.models import Response
-from core.applications.supports.models import Ticket
+from core.applications.supports.models import Response, Ticket
 
 # Register your models here.
 
