@@ -12,7 +12,7 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["accountmarket.onrende
 # DATABASES
 # ------------------------------------------------------------------------------
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)
-DATABASES["default"]["ENGINE"] = "django.db.backends.postgresql"
+
 
 # CACHES
 # ------------------------------------------------------------------------------
