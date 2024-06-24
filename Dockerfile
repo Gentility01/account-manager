@@ -63,16 +63,16 @@ COPY --chown=django:django . ${APP_HOME}
 # make django owner of the WORKDIR directory as well.
 RUN chown django:django ${APP_HOME}
 # Copy entrypoint script
-COPY entrypoint.sh /entrypoint.sh
+COPY render.sh /render.sh
 
 # Switch to root user to change permissions
 USER root
 
 # Make the script executable
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /render.sh
 
 # Switch back to django user
 USER django
 
 # Set the entrypoint script as the default command
-CMD ["/entrypoint.sh"]
+CMD ["/render.sh"]
