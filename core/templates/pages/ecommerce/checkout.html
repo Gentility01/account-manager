@@ -240,9 +240,9 @@
                 </div>
 
                 <div class="place-order text-center mt-1">
-                    <form action="{% url 'ecommerce:create_nowpayment' order_id=order_id  %}" method="get">
-                      <button type="submit" class="btn-common width-180">Pay with Coin</button>
-                    </form>
+                    {% comment %} <form action="{% url 'ecommerce:create_nowpayment' order_id=order_id  %}" method="get"> {% endcomment %}
+                      <a href="{% url 'ecommerce:create_nowpayment' order_id=order_id  %}" class="btn-common width-180">Pay with nowpayment</a>
+                    {% comment %} </form> {% endcomment %}
 
                 </div>
                 {% comment %} </form> {% endcomment %}

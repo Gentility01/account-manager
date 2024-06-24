@@ -1,6 +1,6 @@
 
 # define an alias for the specific python version used in this file.
-FROM python:3.11.4-slim-bullseye as python
+FROM docker.io/python:3.12.3-slim-bookworm as python
 
 # Python build stage
 FROM python as python-build-stage
@@ -44,13 +44,6 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   libpq-dev \
   # Translations dependencies
   gettext \
-  # video codecs
-  # kafka compression
-  libsnappy-dev\
-  # Geodjango dependencies
-  binutils \
-  libproj-dev \
-  gdal-bin \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*

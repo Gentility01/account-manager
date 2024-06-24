@@ -156,3 +156,8 @@ class ProductReviewForm(ModelForm):
     class Meta:
         model = ProductReview
         fields = ["review", "rating"]
+
+
+# class NowPaymentForm(ModelForm):
+#     pay_currency = ChoiceField(choices=[])
+#     order = 

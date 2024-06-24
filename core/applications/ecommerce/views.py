@@ -757,69 +757,59 @@ class AddToWishlistView(View):
         return JsonResponse(context)
 
 
-@method_decorator(csrf_exempt, name="dispatch")
-class CreateNowPaymentViews(LoginRequiredMixin, View):
+
+class NowPaymentView(View):
+
+    def get_supported_currencies(self):
+        headers = {
+            'x-api-key': settings.NOWPAYMENTS_API_KEY
+        }
+        response = requests.get('https://api.nowpayments.io/v1/currencies', headers=headers)
+        if response.status_code == 200:
+            return response.json()['currencies']
+        return []
+
     def get(self, request, order_id):
-        """
-        Create a new payment for the given order
-        and redirect the user to the payment URL.
-
-        Parameters:
-            request (HttpRequest): The HTTP request object.
-            order_id (int): The ID of the order.
-
-        Returns:
-            HttpResponseRedirect: Redirects the user to the payment URL
-            if the payment is successfully created.
-            HttpResponse: Renders the "payment_error.html"
-            template with an error message if the payment creation fails.
-        """
-        # Fetch the order by ID and ensure it belongs to the logged-in user
         order = get_object_or_404(CartOrder, id=order_id, user=request.user)
+        supported_currencies = self.get_supported_currencies()
+        return render(request, 'pages/ecommerce/create_nowpayment.html', {
+            'supported_currencies': supported_currencies,
+            'order': order
+        })
 
-        # Create a new Payment object associated with the order
-        payment = Payment.objects.create(
-            user=request.user,
-            order=order,
-            amount=order.price
-        )
+    def post(self, request, order_id):
+        order = get_object_or_404(CartOrder, id=order_id, user=request.user)
+        pay_currency = request.POST.get('pay_currency')
 
-        # Initialize NowPayment instance to create a new payment
-        nowpayment = NowPayment()
-        payment_data = nowpayment.create_payment(
-            amount=float(order.price),  # Convert price to float for the API
-            currency="USD",  # Specify the currency
-            order_id=str(order.id),  # Pass the order ID as a string
-            description=f"Payment for order {order.id}"  # Description of the payment
-        )
+        # Prepare the request payload
+        payload = {
+            'price_amount': str(order.price),
+            'price_currency': 'USD',  # Assuming the order price is in USD
+            'pay_currency': pay_currency,
+            'ipn_callback_url': 'https://yourwebsite.com/ipn/',  # IPN URL
+            'order_id': str(order.id),
+            'order_description': f'Order #{order.id} for user {order.user.id}'
+        }
 
-        # Check if the payment was successfully created and contains an invoice URL
-        if payment_data.get("invoice_url"):
-            # Save the payment URL to the Payment object and redirect the user
-            payment.payment_url = payment_data["invoice_url"]
-            payment.save()
-            return redirect("payment_complete")  # Redirect to payment complete view
+        # Send the request to NOWPayments
+        headers = {
+            'x-api-key': settings.NOWPAYMENTS_API_KEY
+        }
+        response = requests.post('https://api.nowpayments.io/v1/invoice', json=payload, headers=headers)
+
+        # Process the response
+        if response.status_code == 200:
+            response_data = response.json()
+            return redirect(response_data['invoice_url'])
         else:
-            # Handle the error if payment creation failed
-            return render(request, "payment_error.html", {"error": payment_data.get("message", "Unknown error")})
+            return JsonResponse(response.json(), status=response.status_code)
 
-@method_decorator(csrf_exempt, name="dispatch")
-class PaymentCallbackView(View):
-    def post(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-        payment_id = data.get("order_id")
-        payment_status = data.get("payment_status")
 
-        payment = get_object_or_404(Payment, id=payment_id)
-
-        if payment_status == "finished":
-            payment.status = "verified"
-            payment.verified = True
-            payment.save()
-
-            payment.order.paid_status = True
-            payment.order.save()
-
-            return redirect("ecommerce:payment_complete")  # Redirect to payment complete view
-
-        return redirect("ecommerce:payment_failed")  # Redirect to payment failed view
+@csrf_exempt
+def ipn(request):
+    if request.method == 'POST':
+        data = request.POST
+        # Process the IPN data here (e.g., update order status)
+        print(data)
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'failed'}, status=400)
